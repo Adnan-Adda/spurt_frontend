@@ -88,3 +88,14 @@ export interface UpdateUser {
     userGroupId: number;
     password?: string; // Password is optional when updating
 }
+
+// NEW: Definition for a product category
+export interface Category {
+    categoryId: number;
+    name: string;
+    image: string;
+    imagePath: string;
+    parentInt: number;
+    sortOrder: number;
+    isActive: number;
+}
