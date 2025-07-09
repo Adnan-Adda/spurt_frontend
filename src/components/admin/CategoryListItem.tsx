@@ -13,9 +13,10 @@ import { colors } from '../../styles/colors';
 interface CategoryListItemProps {
     category: Category;
     onPress: () => void;
+    onDelete: () => void;
 }
 
-const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, onPress }) => {
+const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, onPress, onDelete }) => {
     const imageUrl = category.image
         ? `http://localhost:8000/api/media/resize-image?width=100&height=100&path=${category.imagePath}&name=${category.image}`
         : 'https://placehold.co/100x100/e9ecef/495057?text=No+Image';
@@ -35,6 +36,9 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, onPress }
                 <View style={[styles.statusIndicator, { backgroundColor: category.isActive ? colors.success : colors.danger }]} />
                 <Text style={styles.statusText}>{category.isActive ? 'Active' : 'Inactive'}</Text>
             </View>
+            <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+                <Text style={styles.deleteButtonText}>🗑️</Text>
+            </TouchableOpacity>
         </TouchableOpacity>
     );
 };
@@ -81,6 +85,13 @@ const styles = StyleSheet.create({
     statusText: {
         fontSize: 12,
         color: colors.textSecondary,
+    },
+    deleteButton: {
+        padding: 10,
+    },
+    deleteButtonText: {
+        fontSize: 20,
+        color: colors.danger,
     },
 });
 
