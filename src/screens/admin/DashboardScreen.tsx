@@ -415,6 +415,7 @@ import DashboardModuleCard from '../../components/admin/DashboardModuleCard';
 type AdminStackParamList = {
     Dashboard: undefined;
     UserManagement: undefined;
+    ProductManagement: undefined;
     // Add other main modules here as we create them
 };
 type DashboardScreenNavigationProp = StackNavigationProp<AdminStackParamList, 'Dashboard'>;
@@ -441,7 +442,7 @@ const DashboardScreen = () => {
                     <DashboardModuleCard
                         title="Product Management"
                         description="Manage categories, products, and inventory."
-                        onPress={() => { /* We will create this screen next */ }}
+                        onPress={() => navigation.navigate('ProductManagement')}
                     />
                     <DashboardModuleCard
                         title="Site Content"
