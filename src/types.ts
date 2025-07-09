@@ -26,7 +26,7 @@ export interface User {
     // Add any other user properties you need from the API response
 }
 
-// NEW: Type for the dashboard counts API response
+// Type for the dashboard counts API response
 export interface DashboardCounts {
     productCount: number;
     categoryCount: number;
@@ -36,7 +36,7 @@ export interface DashboardCounts {
 }
 
 
-// NEW: Definition for a single product
+// Definition for a single product
 export interface Product {
     productId: number;
     name: string;
@@ -53,23 +53,23 @@ export interface Product {
 }
 
 
-// NEW: Definition for a user role/group
+// Definition for a user role/group
 export interface Role {
     groupId: number;
     name: string;
     isActive: number;
 }
 
-// NEW: Definition for the new role payload
+// Definition for the new role payload
 export interface NewRole {
     name: string;
     status: number; // API expects 'status' (1 for active, 0 for inactive)
 }
 
-// NEW: Definition for the role update payload
+// Definition for the role update payload
 export interface UpdateRole extends NewRole {}
 
-// NEW: Definition for the new user payload
+// Definition for the new user payload
 export interface NewUser {
     firstName: string;
     lastName:string;
@@ -79,7 +79,7 @@ export interface NewUser {
     userGroupId: number;
 }
 
-// NEW: Definition for the user update payload
+// Definition for the user update payload
 export interface UpdateUser {
     firstName: string;
     lastName: string;
@@ -89,7 +89,7 @@ export interface UpdateUser {
     password?: string; // Password is optional when updating
 }
 
-// NEW: Definition for a product category
+// Definition for a product category
 export interface Category {
     categoryId: number;
     name: string;
@@ -98,4 +98,18 @@ export interface Category {
     parentInt: number;
     sortOrder: number;
     isActive: number;
+}
+
+// Definition for the new category payload
+export interface NewCategory {
+    name: string;
+    parentInt: number;
+    sortOrder: number;
+    status: number;
+    image?: string; // For file upload
+}
+
+// Definition for the category update payload
+export interface UpdateCategory extends NewCategory {
+    categoryId: number;
 }
