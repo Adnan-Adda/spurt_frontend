@@ -4,7 +4,7 @@
 * =================================================================
 */
 import React from 'react';
-import { TextInput, StyleSheet, View, Text } from 'react-native';
+import { TextInput, StyleSheet, View, Text, KeyboardTypeOptions } from 'react-native';
 import { colors } from '../../styles/colors';
 
 interface AppTextInputProps {
@@ -14,9 +14,10 @@ interface AppTextInputProps {
     placeholder: string;
     secureTextEntry?: boolean;
     error?: string;
+    keyboardType?: KeyboardTypeOptions;
 }
 
-const AppTextInput: React.FC<AppTextInputProps> = ({ label, value, onChangeText, placeholder, secureTextEntry, error }) => {
+const AppTextInput: React.FC<AppTextInputProps> = ({ label, value, onChangeText, placeholder, secureTextEntry, error, keyboardType }) => {
     return (
         <View style={textInputStyles.container}>
             <Text style={textInputStyles.label}>{label}</Text>
@@ -28,6 +29,7 @@ const AppTextInput: React.FC<AppTextInputProps> = ({ label, value, onChangeText,
                 placeholderTextColor={colors.placeholder}
                 secureTextEntry={secureTextEntry}
                 autoCapitalize="none"
+                keyboardType={keyboardType}
             />
             {error && <Text style={textInputStyles.errorText}>{error}</Text>}
         </View>
