@@ -7,18 +7,32 @@
  */
 import React, { useState, useCallback } from 'react';
 import { SafeAreaView, FlatList, StyleSheet, View, Text } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import { getCategoryListApi } from '../../api/category';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { getCategoryListApi, deleteCategoryApi } from '../../api/category';
 import { Category } from '../../types';
 import CategoryListItem from '../../components/admin/CategoryListItem';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorText from '../../components/common/ErrorText';
 import { colors } from '../../styles/colors';
+import AppButton from '../../components/common/AppButton';
+import ConfirmationModal from '../../components/common/ConfirmationModal';
+import { parseApiError } from '../../utils/errorHandler';
+
+type AdminStackParamList = {
+    CategoryList: undefined;
+    CreateCategory: undefined;
+    EditCategory: { category: Category };
+};
+type CategoryListNavigationProp = StackNavigationProp<AdminStackParamList, 'CategoryList'>;
 
 const CategoryListScreen = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+    const navigation = useNavigation<CategoryListNavigationProp>();
 
     const fetchCategories = async () => {
         setLoading(true);
@@ -43,6 +57,33 @@ const CategoryListScreen = () => {
         }, [])
     );
 
+    const handleDeletePress = (category: Category) => {
+        setCategoryToDelete(category);
+        setModalVisible(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (categoryToDelete) {
+            deleteCategory(categoryToDelete.categoryId);
+        }
+        setModalVisible(false);
+        setCategoryToDelete(null);
+    };
+
+    const deleteCategory = async (categoryId: number) => {
+        try {
+            const response = await deleteCategoryApi(categoryId);
+            if (response.data && response.data.status === 1) {
+                fetchCategories();
+            } else {
+                throw new Error(response.data.message || 'Failed to delete category.');
+            }
+        } catch (err: any) {
+            const errorMessage = parseApiError(err);
+            setError(errorMessage);
+        }
+    };
+
     if (loading) {
         return <LoadingSpinner />;
     }
@@ -57,11 +98,18 @@ const CategoryListScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+                <AppButton title="Create New Category" onPress={() => navigation.navigate('CreateCategory')} />
+            </View>
             <FlatList
                 data={categories}
                 keyExtractor={(item) => item.categoryId.toString()}
                 renderItem={({ item }) => (
-                    <CategoryListItem category={item} onPress={() => console.log('Pressed category:', item.name)} />
+                    <CategoryListItem
+                        category={item}
+                        onPress={() => navigation.navigate('EditCategory', { category: item })}
+                        onDelete={() => handleDeletePress(item)}
+                    />
                 )}
                 ListEmptyComponent={
                     <View style={styles.centerContainer}>
@@ -69,6 +117,16 @@ const CategoryListScreen = () => {
                     </View>
                 }
             />
+            {categoryToDelete && (
+                <ConfirmationModal
+                    visible={isModalVisible}
+                    title="Delete Category"
+                    message={`Are you sure you want to delete "${categoryToDelete.name}"?`}
+                    onCancel={() => setModalVisible(false)}
+                    onConfirm={handleConfirmDelete}
+                    confirmButtonText="Delete"
+                />
+            )}
         </SafeAreaView>
     );
 };
@@ -77,6 +135,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
+    },
+    header: {
+        paddingHorizontal: 20,
+        paddingTop: 10,
     },
     centerContainer: {
         flex: 1,
