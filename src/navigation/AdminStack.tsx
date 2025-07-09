@@ -19,6 +19,8 @@ import CreateRoleScreen from '../screens/admin/CreateRoleScreen';
 import EditRoleScreen from '../screens/admin/EditRoleScreen';
 import ProductManagementScreen from '../screens/admin/ProductManagementScreen';
 import CategoryListScreen from '../screens/admin/CategoryListScreen';
+import CreateCategoryScreen from '../screens/admin/CreateCategoryScreen';
+import EditCategoryScreen from '../screens/admin/EditCategoryScreen';
 import {colors} from '../styles/colors';
 
 const AdminStackNav = createStackNavigator();
@@ -83,6 +85,10 @@ const AdminStack = () => {
                 component={CategoryListScreen}
                 options={{title: 'Categories'}}
             />
+            <AdminStackNav.Screen name="CreateCategory" component={CreateCategoryScreen}
+                                  options={{title: 'Create Category'}}/>
+            <AdminStackNav.Screen name="EditCategory" component={EditCategoryScreen}
+                                  options={{title: 'Edit Category'}}/>
             <AdminStackNav.Screen
                 name="ProductList"
                 component={ProductListScreen}
