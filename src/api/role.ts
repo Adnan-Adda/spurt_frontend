@@ -7,6 +7,7 @@
  * API Endpoint ID: ROLE-003
  */
 import apiClient from './apiClient';
+import { NewRole, UpdateRole } from '../types';
 
 export const getRolesApi = () => {
     // The API uses a generic list endpoint, so we provide params.
@@ -17,5 +18,19 @@ export const getRolesApi = () => {
         keyword: '',
         count: false,
     };
-    return apiClient.get('/role/rolelist', { params });
+    return apiClient.get('/role/rolelist', {params});
+};
+
+export const deleteRoleApi = (roleId: number) => {
+    return apiClient.delete(`/role/delete-role/${roleId}`);
+};
+
+
+export const createRoleApi = (roleData: NewRole) => {
+    return apiClient.post('/role/create-role', roleData);
+};
+
+
+export const updateRoleApi = (roleId: number, roleData: UpdateRole) => {
+    return apiClient.put(`/role/update-role/${roleId}`, roleData);
 };

@@ -17,6 +17,12 @@ export interface User {
     lastName: string;
     email: string;
     username: string;
+    // ToDo remove password from user list when fetching it
+    usergroup: { // <-- ADDED
+        name: string;
+        groupId: number;
+        createdBy: string;
+    };
     // Add any other user properties you need from the API response
 }
 
@@ -54,6 +60,15 @@ export interface Role {
     isActive: number;
 }
 
+// NEW: Definition for the new role payload
+export interface NewRole {
+    name: string;
+    status: number; // API expects 'status' (1 for active, 0 for inactive)
+}
+
+// NEW: Definition for the role update payload
+export interface UpdateRole extends NewRole {}
+
 // NEW: Definition for the new user payload
 export interface NewUser {
     firstName: string;
@@ -62,4 +77,14 @@ export interface NewUser {
     username: string;
     password?: string;
     userGroupId: number;
+}
+
+// NEW: Definition for the user update payload
+export interface UpdateUser {
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
+    userGroupId: number;
+    password?: string; // Password is optional when updating
 }

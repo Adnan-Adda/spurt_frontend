@@ -235,107 +235,219 @@
  * This screen is updated to pass the onPress handler directly to
  * the StatCard and includes logging to trace the press event.
  */
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl, SafeAreaView } from 'react-native';
+// import React, { useContext, useEffect, useState } from 'react';
+// import { View, Text, StyleSheet, ScrollView, RefreshControl, SafeAreaView } from 'react-native';
+// import { useNavigation } from '@react-navigation/native';
+// import { StackNavigationProp } from '@react-navigation/stack';
+// import { AuthContext } from '../../state/AuthContext';
+// import { colors } from '../../styles/colors';
+// import AppButton from '../../components/common/AppButton';
+// import { getDashboardCountsApi } from '../../api/dashboard';
+// import { DashboardCounts } from '../../types';
+// import StatCard from '../../components/admin/StatCard';
+// import ErrorText from '../../components/common/ErrorText';
+//
+// type AdminStackParamList = {
+//     Dashboard: undefined;
+//     ProductList: undefined;
+// };
+// type DashboardScreenNavigationProp = StackNavigationProp<AdminStackParamList, 'Dashboard'>;
+//
+//
+// const DashboardScreen = () => {
+//     const { logout, user } = useContext(AuthContext);
+//     const [counts, setCounts] = useState<DashboardCounts | null>(null);
+//     const [loading, setLoading] = useState(true);
+//     const [error, setError] = useState<string | null>(null);
+//     const navigation = useNavigation<DashboardScreenNavigationProp>();
+//
+//     const fetchDashboardData = async () => {
+//         setLoading(true);
+//         setError(null);
+//         try {
+//             const response = await getDashboardCountsApi();
+//             if (response.data && response.data.status === 1) {
+//                 setCounts(response.data.data);
+//             } else {
+//                 throw new Error(response.data.message || 'Failed to fetch dashboard data');
+//             }
+//         } catch (err: any) {
+//             const errorMessage = err.response?.data?.message || err.message || 'An unknown error occurred.';
+//             setError(errorMessage);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+//
+//     useEffect(() => {
+//         fetchDashboardData();
+//     }, []);
+//
+//     const statTitles: { [key in keyof DashboardCounts]?: string } = {
+//         productCount: 'Total Products',
+//         categoryCount: 'Total Categories',
+//         customerCount: 'Total Customers',
+//         salesCount: 'Total Sales'
+//     };
+//
+//     const handleCardPress = (key: string) => {
+//         // --- DEBUG LOG ---
+//         console.log(`[DashboardScreen] Card pressed with key: ${key}`);
+//
+//         if (key === 'productCount') {
+//             console.log('[DashboardScreen] Navigating to ProductList...');
+//             navigation.navigate('ProductList');
+//         } else {
+//             console.log(`[DashboardScreen] No navigation defined for key: ${key}`);
+//         }
+//     };
+//
+//     return (
+//         <SafeAreaView style={styles.safeArea}>
+//             <ScrollView
+//                 style={styles.container}
+//                 refreshControl={
+//                     <RefreshControl refreshing={loading} onRefresh={fetchDashboardData} />
+//                 }
+//             >
+//                 <View style={styles.header}>
+//                     <Text style={styles.title}>Dashboard</Text>
+//                     <Text style={styles.welcomeText}>Welcome, {user?.firstName || 'Admin'}!</Text>
+//                 </View>
+//
+//                 {error && <ErrorText message={error} />}
+//
+//                 <View style={styles.statsGrid}>
+//                     {counts ? (
+//                         Object.keys(statTitles).map(key => (
+//                             <View key={key} style={styles.cardContainer}>
+//                                 <StatCard
+//                                     title={statTitles[key as keyof DashboardCounts]!}
+//                                     value={counts[key as keyof DashboardCounts]}
+//                                     loading={loading}
+//                                     onPress={() => handleCardPress(key)} // <-- PASS ONPRESS DIRECTLY
+//                                 />
+//                             </View>
+//                         ))
+//                     ) : (
+//                         Array.from({ length: 4 }).map((_, index) => (
+//                             <View key={index} style={styles.cardContainer}>
+//                                 <StatCard title="" value="" loading={true} />
+//                             </View>
+//                         ))
+//                     )}
+//                 </View>
+//
+//                 <View style={styles.footer}>
+//                     <AppButton title="Logout" onPress={logout} />
+//                 </View>
+//             </ScrollView>
+//         </SafeAreaView>
+//     );
+// };
+//
+// const styles = StyleSheet.create({
+//     safeArea: {
+//         flex: 1,
+//         backgroundColor: colors.background,
+//     },
+//     container: {
+//         flex: 1,
+//     },
+//     header: {
+//         paddingHorizontal: 20,
+//         paddingTop: 20,
+//         paddingBottom: 10,
+//     },
+//     title: {
+//         fontSize: 32,
+//         fontWeight: 'bold',
+//         color: colors.text,
+//     },
+//     welcomeText: {
+//         fontSize: 16,
+//         color: colors.textSecondary,
+//         marginTop: 4,
+//     },
+//     statsGrid: {
+//         flexDirection: 'row',
+//         flexWrap: 'wrap',
+//         justifyContent: 'center',
+//         paddingHorizontal: 12,
+//         marginTop: 20,
+//     },
+//     cardContainer: {
+//         width: '50%',
+//         paddingHorizontal: 4,
+//     },
+//     footer: {
+//         padding: 20,
+//         marginTop: 20,
+//     }
+// });
+//
+// export default DashboardScreen;
+
+
+
+
+
+
+
+
+/*
+ * =================================================================
+ * == FILE: src/screens/admin/DashboardScreen.tsx (MODIFIED)
+ * =================================================================
+ *
+ * Refactored to be a "Control Panel" that navigates to sub-menus.
+ */
+import React, { useContext } from 'react';
+import { SafeAreaView, View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AuthContext } from '../../state/AuthContext';
 import { colors } from '../../styles/colors';
 import AppButton from '../../components/common/AppButton';
-import { getDashboardCountsApi } from '../../api/dashboard';
-import { DashboardCounts } from '../../types';
-import StatCard from '../../components/admin/StatCard';
-import ErrorText from '../../components/common/ErrorText';
+import DashboardModuleCard from '../../components/admin/DashboardModuleCard';
 
+// Define the types for the navigator to ensure type safety
 type AdminStackParamList = {
     Dashboard: undefined;
-    ProductList: undefined;
+    UserManagement: undefined;
+    // Add other main modules here as we create them
 };
 type DashboardScreenNavigationProp = StackNavigationProp<AdminStackParamList, 'Dashboard'>;
 
-
 const DashboardScreen = () => {
     const { logout, user } = useContext(AuthContext);
-    const [counts, setCounts] = useState<DashboardCounts | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const navigation = useNavigation<DashboardScreenNavigationProp>();
-
-    const fetchDashboardData = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await getDashboardCountsApi();
-            if (response.data && response.data.status === 1) {
-                setCounts(response.data.data);
-            } else {
-                throw new Error(response.data.message || 'Failed to fetch dashboard data');
-            }
-        } catch (err: any) {
-            const errorMessage = err.response?.data?.message || err.message || 'An unknown error occurred.';
-            setError(errorMessage);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchDashboardData();
-    }, []);
-
-    const statTitles: { [key in keyof DashboardCounts]?: string } = {
-        productCount: 'Total Products',
-        categoryCount: 'Total Categories',
-        customerCount: 'Total Customers',
-        salesCount: 'Total Sales'
-    };
-
-    const handleCardPress = (key: string) => {
-        // --- DEBUG LOG ---
-        console.log(`[DashboardScreen] Card pressed with key: ${key}`);
-
-        if (key === 'productCount') {
-            console.log('[DashboardScreen] Navigating to ProductList...');
-            navigation.navigate('ProductList');
-        } else {
-            console.log(`[DashboardScreen] No navigation defined for key: ${key}`);
-        }
-    };
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ScrollView
-                style={styles.container}
-                refreshControl={
-                    <RefreshControl refreshing={loading} onRefresh={fetchDashboardData} />
-                }
-            >
+            <ScrollView style={styles.container}>
                 <View style={styles.header}>
-                    <Text style={styles.title}>Dashboard</Text>
+                    <Text style={styles.title}>Control Panel</Text>
                     <Text style={styles.welcomeText}>Welcome, {user?.firstName || 'Admin'}!</Text>
                 </View>
 
-                {error && <ErrorText message={error} />}
-
-                <View style={styles.statsGrid}>
-                    {counts ? (
-                        Object.keys(statTitles).map(key => (
-                            <View key={key} style={styles.cardContainer}>
-                                <StatCard
-                                    title={statTitles[key as keyof DashboardCounts]!}
-                                    value={counts[key as keyof DashboardCounts]}
-                                    loading={loading}
-                                    onPress={() => handleCardPress(key)} // <-- PASS ONPRESS DIRECTLY
-                                />
-                            </View>
-                        ))
-                    ) : (
-                        Array.from({ length: 4 }).map((_, index) => (
-                            <View key={index} style={styles.cardContainer}>
-                                <StatCard title="" value="" loading={true} />
-                            </View>
-                        ))
-                    )}
+                <View style={styles.moduleGrid}>
+                    <DashboardModuleCard
+                        title="User & Role Management"
+                        description="Create vendors, admins, and manage permissions."
+                        onPress={() => navigation.navigate('UserManagement')}
+                    />
+                    {/* We will add more modules here */}
+                    <DashboardModuleCard
+                        title="Product Management"
+                        description="Manage categories, products, and inventory."
+                        onPress={() => { /* We will create this screen next */ }}
+                    />
+                    <DashboardModuleCard
+                        title="Site Content"
+                        description="Manage banners and informational pages."
+                        onPress={() => { /* We will create this screen next */ }}
+                    />
                 </View>
 
                 <View style={styles.footer}>
@@ -369,16 +481,9 @@ const styles = StyleSheet.create({
         color: colors.textSecondary,
         marginTop: 4,
     },
-    statsGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        paddingHorizontal: 12,
-        marginTop: 20,
-    },
-    cardContainer: {
-        width: '50%',
-        paddingHorizontal: 4,
+    moduleGrid: {
+        paddingHorizontal: 20,
+        marginTop: 10,
     },
     footer: {
         padding: 20,

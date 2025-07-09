@@ -7,8 +7,32 @@
  * API Endpoint ID: AUTH-002
  */
 import apiClient from './apiClient';
-import { NewUser } from '../types';
+import { NewUser, UpdateUser } from '../types';
 
 export const createUserApi = (userData: NewUser) => {
     return apiClient.post('/auth/create-user', userData);
+};
+
+
+export const getUserListApi = (limit: number, offset: number, keyword: string = '') => {
+    const params = {
+        limit,
+        offset,
+        keyword,
+    };
+    return apiClient.get('/auth/userlist', { params });
+};
+
+// Function to get a single user's details
+export const getUserProfileApi = () => {
+    return apiClient.get(`/auth/get-profile`);
+};
+
+// Function to update a user
+export const updateUserApi = (userId: number, userData: UpdateUser) => {
+    return apiClient.put(`/auth/update-user/${userId}`, userData);
+};
+
+export const deleteUserApi = (userId: number) => {
+    return apiClient.delete(`/auth/delete-user/${userId}`);
 };

@@ -11,6 +11,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DashboardScreen from '../screens/admin/DashboardScreen';
 import ProductListScreen from '../screens/admin/ProductListScreen';
 import CreateUserScreen from '../screens/admin/CreateUserScreen';
+import UserManagementScreen from '../screens/admin/UserManagementScreen';
+import UserListScreen from '../screens/admin/UserListScreen';
+import EditUserScreen from '../screens/admin/EditUserScreen';
+import RoleListScreen from '../screens/admin/RoleListScreen';
+import CreateRoleScreen from '../screens/admin/CreateRoleScreen';
+import EditRoleScreen from '../screens/admin/EditRoleScreen';
 import { colors } from '../styles/colors';
 
 const AdminStackNav = createStackNavigator();
@@ -28,16 +34,46 @@ const AdminStack = () => {
                 },
             }}
         >
-            {/*<AdminStackNav.Screen name="Dashboard" component={DashboardScreen} options={{ headerShown: false }} />*/}
-            {/*<AdminStackNav.Screen*/}
-            {/*    name="ProductList"*/}
-            {/*    component={ProductListScreen}*/}
-            {/*    options={{ title: 'Products' }}*/}
-            {/*/>*/}
+            <AdminStackNav.Screen name="Dashboard" component={DashboardScreen} options={{ headerShown: false }} />
+            <AdminStackNav.Screen
+                name="UserManagement"
+                component={UserManagementScreen}
+                options={{ title: 'User Management' }}
+            />
             <AdminStackNav.Screen
                 name="CreateUser"
                 component={CreateUserScreen}
                 options={{ title: 'Create New User' }}
+            />
+            <AdminStackNav.Screen
+                name="UserList"
+                component={UserListScreen}
+                options={{ title: 'All Users' }}
+            />
+            <AdminStackNav.Screen
+                name="EditUser"
+                component={EditUserScreen}
+                options={{ title: 'Edit User' }}
+            />
+            <AdminStackNav.Screen
+                name="RoleList"
+                component={RoleListScreen}
+                options={{ title: 'Manage Roles' }}
+            />
+            <AdminStackNav.Screen
+                name="CreateRole"
+                component={CreateRoleScreen}
+                options={{ title: 'Create New Role' }}
+            />
+            <AdminStackNav.Screen
+                name="EditRole"
+                component={EditRoleScreen}
+                options={{ title: 'Edit Role' }}
+            />
+            <AdminStackNav.Screen
+                name="ProductList"
+                component={ProductListScreen}
+                options={{ title: 'Products' }}
             />
         </AdminStackNav.Navigator>
     );
