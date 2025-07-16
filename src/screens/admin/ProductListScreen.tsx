@@ -5,19 +5,31 @@
  *
  * This screen fetches and displays a list of all products.
  */
-import React, { useEffect, useState } from 'react';
+
+import React, { useState, useCallback } from 'react';
 import { SafeAreaView, FlatList, StyleSheet, View, Text } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { getProductListApi } from '../../api/product';
 import { Product } from '../../types';
 import ProductListItem from '../../components/admin/ProductListItem';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorText from '../../components/common/ErrorText';
 import { colors } from '../../styles/colors';
+import AppButton from '../../components/common/AppButton';
+import {parseApiError} from "../../utils/errorHandler";
+
+type AdminStackParamList = {
+    ProductList: undefined;
+    CreateProduct: undefined;
+};
+type ProductListNavigationProp = StackNavigationProp<AdminStackParamList, 'ProductList'>;
 
 const ProductListScreen = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigation = useNavigation<ProductListNavigationProp>();
 
     const fetchProducts = async () => {
         setLoading(true);
@@ -25,22 +37,24 @@ const ProductListScreen = () => {
         try {
             // ToDo
             // Fetch first 20 products for now. We can add pagination later.
-            const response = await getProductListApi(20, 0);
+            const response = await getProductListApi(50, 0);
             if (response.data && response.data.status === 1) {
                 setProducts(response.data.data);
             } else {
                 throw new Error(response.data.message || 'Failed to fetch products');
             }
         } catch (err: any) {
-            setError(err.message || 'An unknown error occurred');
+            setError(parseApiError(err));
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            fetchProducts();
+        }, [])
+    );
 
     if (loading) {
         return <LoadingSpinner />;
@@ -56,6 +70,9 @@ const ProductListScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+                <AppButton title="Create New Product" onPress={() => navigation.navigate('CreateProduct')} />
+            </View>
             <FlatList
                 data={products}
                 keyExtractor={(item) => item.productId.toString()}
@@ -76,6 +93,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
+    },
+    header: {
+        paddingHorizontal: 20,
+        paddingTop: 10,
     },
     centerContainer: {
         flex: 1,
