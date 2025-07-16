@@ -18,6 +18,7 @@ const USER_KEY = 'auth_user';
 export const saveToken = async (token: string) => {
     try {
         await AsyncStorage.setItem(TOKEN_KEY, token);
+        console.log("Token: ",token);
     } catch (e) {
         console.error('Failed to save the token to storage', e);
     }
