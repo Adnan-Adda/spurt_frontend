@@ -4,8 +4,8 @@
 * =================================================================
 */
 import React from 'react';
-import { TextInput, StyleSheet, View, Text, KeyboardTypeOptions } from 'react-native';
-import { colors } from '../../styles/colors';
+import {TextInput, StyleSheet, View, Text, KeyboardTypeOptions} from 'react-native';
+import {colors} from '../../styles/colors';
 
 interface AppTextInputProps {
     label: string;
@@ -15,9 +15,21 @@ interface AppTextInputProps {
     secureTextEntry?: boolean;
     error?: string;
     keyboardType?: KeyboardTypeOptions;
+    multiline?: boolean;
+    numberOfLines?: number;
 }
 
-const AppTextInput: React.FC<AppTextInputProps> = ({ label, value, onChangeText, placeholder, secureTextEntry, error, keyboardType }) => {
+const AppTextInput: React.FC<AppTextInputProps> = ({
+                                                       label,
+                                                       value,
+                                                       onChangeText,
+                                                       placeholder,
+                                                       secureTextEntry,
+                                                       error,
+                                                       keyboardType,
+                                                       multiline,
+                                                       numberOfLines,
+                                                   }) => {
     return (
         <View style={textInputStyles.container}>
             <Text style={textInputStyles.label}>{label}</Text>
@@ -29,6 +41,8 @@ const AppTextInput: React.FC<AppTextInputProps> = ({ label, value, onChangeText,
                 placeholderTextColor={colors.placeholder}
                 secureTextEntry={secureTextEntry}
                 autoCapitalize="none"
+                multiline={multiline}
+                numberOfLines={multiline ? numberOfLines : 1}
                 keyboardType={keyboardType}
             />
             {error && <Text style={textInputStyles.errorText}>{error}</Text>}
