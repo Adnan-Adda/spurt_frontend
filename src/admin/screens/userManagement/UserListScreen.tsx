@@ -197,9 +197,11 @@ import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';
 import ErrorText from '../../../shared/components/common/ErrorText';
 import {colors} from '@/shared/styles/colors';
 import ConfirmationModal from '../../../shared/components/common/ConfirmationModal';
+import AppButton from "@/shared/components/common/AppButton";
 
 type AdminStackParamList = {
     UserList: undefined;
+    CreateUser: undefined;
     EditUser: { user: User }; // <-- Pass the entire User object
 };
 type UserListScreenNavigationProp = StackNavigationProp<AdminStackParamList, 'UserList'>;
@@ -321,6 +323,9 @@ const UserListScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+                <AppButton title="Create New User" onPress={() => navigation.navigate('CreateUser')}/>
+            </View>
             <FlatList
                 data={users}
                 keyExtractor={(item) => item.userId.toString()}
@@ -355,6 +360,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
+    },
+    header: {
+        paddingHorizontal: 20,
+        paddingTop: 10,
     },
     centerContainer: {
         flex: 1,
