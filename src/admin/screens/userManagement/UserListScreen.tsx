@@ -198,6 +198,8 @@ import ErrorText from '../../../shared/components/common/ErrorText';
 import {colors} from '@/shared/styles/colors';
 import ConfirmationModal from '../../../shared/components/common/ConfirmationModal';
 import AppButton from "@/shared/components/common/AppButton";
+import Breadcrumb from "@/admin/components/common/Breadcrumb";
+import ListHeader from "@/admin/components/common/ListHeader";
 
 type AdminStackParamList = {
     UserList: undefined;
@@ -323,9 +325,14 @@ const UserListScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <AppButton title="Create New User" onPress={() => navigation.navigate('CreateUser')}/>
-            </View>
+            <Breadcrumb path={['Sellers', 'Manage Sellers']}/>
+            <ListHeader
+                itemCount={users.length}
+                itemType="Sellers"
+                createButton={
+                    <AppButton title="Create Seller" onPress={() => navigation.navigate('CreateUser')}/>
+                }
+            />
             <FlatList
                 data={users}
                 keyExtractor={(item) => item.userId.toString()}
@@ -341,19 +348,23 @@ const UserListScreen = () => {
                     </View>
                 }
             />
-            {/* Render the modal */}
-            {userToDelete && (
-                <ConfirmationModal
-                    visible={isModalVisible}
-                    title="Delete User"
-                    message={`Are you sure you want to delete ${userToDelete.firstName} ${userToDelete.lastName}? This action cannot be undone.`}
-                    onCancel={handleCancelDelete}
-                    onConfirm={handleConfirmDelete}
-                    confirmButtonText="Delete"
-                />
-            )}
+            {/* Render the modal */
+            }
+            {
+                userToDelete && (
+                    <ConfirmationModal
+                        visible={isModalVisible}
+                        title="Delete User"
+                        message={`Are you sure you want to delete ${userToDelete.firstName} ${userToDelete.lastName}? This action cannot be undone.`}
+                        onCancel={handleCancelDelete}
+                        onConfirm={handleConfirmDelete}
+                        confirmButtonText="Delete"
+                    />
+                )
+            }
         </SafeAreaView>
-    );
+    )
+        ;
 };
 
 const styles = StyleSheet.create({
