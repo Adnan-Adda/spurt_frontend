@@ -8,14 +8,16 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Product} from '@/shared/types';
+import {Feather} from '@expo/vector-icons';
 import {colors} from '@/shared/styles/colors';
 
 interface ProductListItemProps {
     product: Product;
+    onDelete: () => void;
     onPress: () => void;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({product, onPress}) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({product, onPress, onDelete}) => {
     // Use a placeholder if no image is available
     const imageUrl = product.productImage?.[0]?.image
         ? `http://localhost:8000/api/media/resize-image?width=100&height=100&path=${product.productImage[0].containerName}&name=${product.productImage[0].image}`
@@ -38,6 +40,10 @@ const ProductListItem: React.FC<ProductListItemProps> = ({product, onPress}) => 
                     style={[styles.statusIndicator, {backgroundColor: product.isActive ? colors.success : colors.danger}]}/>
                 <Text style={styles.statusText}>{product.isActive ? 'Active' : 'Inactive'}</Text>
             </View>
+            {/* --- ADDED DELETE BUTTON --- */}
+            <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+                <Feather name="trash-2" size={20} color={colors.danger}/>
+            </TouchableOpacity>
         </TouchableOpacity>
     );
 };
@@ -91,6 +97,9 @@ const styles = StyleSheet.create({
     statusText: {
         fontSize: 12,
         color: colors.textSecondary,
+    },
+    deleteButton: {
+        padding: 10,
     },
 });
 

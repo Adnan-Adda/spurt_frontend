@@ -7,7 +7,7 @@
  * API Endpoint ID: ROLE-003
  */
 import apiClient from '../../shared/api/apiClient';
-import {NewRole, UpdateRole} from '../../shared/types/types';
+import {NewRole, UpdateRole} from '@/shared/types';
 
 export const getRolesApi = () => {
     // The API uses a generic list endpoint, so we provide params.

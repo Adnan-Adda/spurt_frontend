@@ -7,7 +7,7 @@
  * API calls, such as logging in.
  */
 import apiClient from '../../shared/api/apiClient';
-import {LoginCredentials} from '../../shared/types/types';
+import {LoginCredentials} from '@/shared/types';
 
 // Corresponds to API endpoint: AUTH-010
 export const loginApi = (credentials: LoginCredentials) => {

@@ -7,7 +7,7 @@
  * API Endpoint ID: CAT-007
  */
 import apiClient from '../../shared/api/apiClient';
-import {NewCategory, UpdateCategory} from '../../shared/types/types';
+import {NewCategory, UpdateCategory} from '@/shared/types';
 
 export const getCategoryListApi = (limit: number, offset: number, keyword: string = '', sortOrder: number = 0) => {
     const params = {

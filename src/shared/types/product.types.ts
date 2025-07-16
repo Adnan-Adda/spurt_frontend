@@ -1,19 +1,30 @@
-// Definition for a single product
+/*
+ * =================================================================
+ * == FILE: src/shared/types/product.types.ts
+ * =================================================================
+ */
+
+
 export interface Product {
     productId: number;
     name: string;
     sku: string;
     price: string;
     quantity: number;
-    isActive: number; // 1 for active, 0 for inactive
+    isActive: number;
     imagePath: string;
     productImage: {
         image: string;
         containerName: string;
     }[];
-    // Add other fields from the API response as needed
+    // Add other fields as needed
+    productDescription: string;
+    upc: string;
+    hsn: string;
+    dateAvailable: string;
+    sortOrder: number;
+    Category: { categoryId: number; name: string }[];
 }
-
 
 export interface NewProduct {
     productName: string;
@@ -21,11 +32,15 @@ export interface NewProduct {
     sku: string;
     upc: string;
     hsn: string;
-    image: string; // The API expects a base64 encoded string
-    categoryId: string; // API expects a string of comma-separated IDs
+    image: string;
+    categoryId: string;
     price: number;
     quantity: number;
-    dateAvailable: string; // Format: YYYY-MM-DD
-    status: number; // 1 for active, 0 for inactive
+    dateAvailable: string;
+    status: number;
     sortOrder: number;
+}
+
+export interface UpdateProduct extends NewProduct {
+    productId: number;
 }

@@ -9,11 +9,10 @@
 import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Ionicons} from '@expo/vector-icons';
-
-// Import our new stack navigators
 import DashboardStack from './DashboardStack';
 import SellerStack from './SellerStack';
 import {colors} from '@/shared/styles/colors';
+import ProductStack from "@/admin/navigation/ProductStack";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -50,6 +49,7 @@ const MainTabNavigator = () => {
         >
             <Tab.Screen name="Dashboard" component={DashboardStack}/>
             <Tab.Screen name="Sellers" component={SellerStack}/>
+            <Tab.Screen name="Products" component={ProductStack} />
             {/* We will add more tabs like 'Marketplace' and 'CMS' here later */}
         </Tab.Navigator>
     );

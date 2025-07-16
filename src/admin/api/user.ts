@@ -7,7 +7,7 @@
  * API Endpoint ID: AUTH-002
  */
 import apiClient from '../../shared/api/apiClient';
-import {NewUser, UpdateUser} from '../../shared/types/types';
+import {NewUser, UpdateUser} from '@/shared/types';
 
 export const createUserApi = (userData: NewUser) => {
     return apiClient.post('/auth/create-user', userData);
