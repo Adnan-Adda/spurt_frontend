@@ -22,6 +22,7 @@ import CategoryListScreen from '../screens/admin/CategoryListScreen';
 import CreateCategoryScreen from '../screens/admin/CreateCategoryScreen';
 import EditCategoryScreen from '../screens/admin/EditCategoryScreen';
 import {colors} from '../styles/colors';
+import CreateProductScreen from "../screens/admin/CreateProductScreen";
 
 const AdminStackNav = createStackNavigator();
 
@@ -94,6 +95,8 @@ const AdminStack = () => {
                 component={ProductListScreen}
                 options={{title: 'Products'}}
             />
+            <AdminStackNav.Screen name="CreateProduct" component={CreateProductScreen}
+                                  options={{title: 'Create Product'}}/>
         </AdminStackNav.Navigator>
     );
 };
