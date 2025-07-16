@@ -15,6 +15,7 @@ import AppButton from '../../components/common/AppButton';
 type AdminStackParamList = {
     ProductManagement: undefined;
     CategoryList: undefined;
+    ProductList: undefined;
 };
 type ProductManagementScreenNavigationProp = StackNavigationProp<AdminStackParamList, 'ProductManagement'>;
 
@@ -28,7 +29,10 @@ const ProductManagementScreen = () => {
                     title="Manage Categories"
                     onPress={() => navigation.navigate('CategoryList')}
                 />
-                {/* We will add a "Manage Products" button here later */}
+                <AppButton
+                    title="Manage Products"
+                    onPress={() => navigation.navigate('ProductList')}
+                />
             </View>
         </SafeAreaView>
     );
