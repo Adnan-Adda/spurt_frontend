@@ -17,6 +17,8 @@ import ConfirmationModal from '../../../shared/components/common/ConfirmationMod
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
 import {StackNavigationProp} from '@react-navigation/stack';
+import Breadcrumb from "@/admin/components/common/Breadcrumb";
+import ListHeader from "@/admin/components/common/ListHeader";
 
 type AdminStackParamList = {
     RoleList: undefined;
@@ -101,6 +103,14 @@ const RoleListScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <Breadcrumb path={['Roles', 'Manage Roles']}/>
+            <ListHeader
+                itemCount={roles.length}
+                itemType="Rolles"
+                createButton={
+                    <AppButton title="Create Role" onPress={() => navigation.navigate('CreateRole')}/>
+                }
+            />
             <View style={styles.header}>
                 <AppButton title="Create New Role" onPress={() => navigation.navigate('CreateRole')}/>
             </View>
