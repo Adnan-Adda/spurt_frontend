@@ -1,15 +1,17 @@
 import React from 'react';
-import { AuthProvider } from './src/state/AuthContext';
-import AppNavigator from './src/navigation/AppNavigator';
-import { NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
+import {AuthProvider} from './src/shared/state/AuthContext';
+import AppNavigator from './src/admin/navigation/AppNavigator';
+import {NavigationContainer} from '@react-navigation/native';
+import {StatusBar} from 'expo-status-bar';
 
 export default function App() {
     return (
         <AuthProvider>
             <NavigationContainer>
-                <AppNavigator />
-                <StatusBar style="auto" />
+                {/* We can later add logic here to decide whether to show
+            the Admin, Seller, or Storefront app */}
+                <AppNavigator/>
+                <StatusBar style="auto"/>
             </NavigationContainer>
         </AuthProvider>
     );
