@@ -7,31 +7,44 @@
  * Each tab renders its own StackNavigator, creating a modular design.
  */
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Text} from 'react-native';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {Ionicons} from '@expo/vector-icons';
 
 // Import our new stack navigators
 import DashboardStack from './DashboardStack';
 import SellerStack from './SellerStack';
 import {colors} from '@/shared/styles/colors';
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
 const MainTabNavigator = () => {
     return (
         <Tab.Navigator
             screenOptions={({route}) => ({
-                headerShown: false, // Headers are handled by the child StackNavigators
                 tabBarActiveTintColor: colors.primary,
                 tabBarInactiveTintColor: colors.textSecondary,
-                tabBarIcon: ({color, size}) => {
-                    let iconName;
+                tabBarIndicatorStyle: {
+                    backgroundColor: colors.primary,
+                },
+                tabBarLabelStyle: {
+                    fontWeight: 'bold',
+                },
+                tabBarStyle: {
+                    backgroundColor: colors.background,
+                },
+                tabBarIcon: ({focused, color}) => {
+                    let iconName: keyof typeof Ionicons.glyphMap;
+
                     if (route.name === 'Dashboard') {
-                        iconName = '📊';
+                        iconName = focused ? 'stats-chart' : 'stats-chart-outline';
                     } else if (route.name === 'Sellers') {
-                        iconName = '👥';
+                        iconName = focused ? 'people' : 'people-outline';
+                    } else {
+                        iconName = 'alert-circle'; // Fallback icon
                     }
-                    return <Text style={{color, fontSize: size}}>{iconName}</Text>;
+
+                    // You can return any component that you like here!
+                    return <Ionicons name={iconName} size={22} color={color}/>;
                 },
             })}
         >
