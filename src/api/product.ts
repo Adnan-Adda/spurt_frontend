@@ -8,6 +8,7 @@
  * API Endpoint ID: PROD-025
  */
 import apiClient from './apiClient';
+import {NewProduct} from "../types";
 
 // The API supports pagination, so we can pass limit and offset
 export const getProductListApi = (limit: number, offset: number, keyword: string = '') => {
@@ -16,5 +17,9 @@ export const getProductListApi = (limit: number, offset: number, keyword: string
         offset,
         keyword,
     };
-    return apiClient.get('/product/inventory-product-list', {params});
+    return apiClient.get('/product/', {params});
+};
+
+export const createProductApi = (productData: NewProduct) => {
+    return apiClient.post('/product', productData);
 };
