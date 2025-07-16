@@ -7,10 +7,8 @@
  * allowing the user to switch between managing sellers and roles.
  */
 import React from 'react';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { colors } from '@/shared/styles/colors';
-
-// Import the list screens that will be our tabs
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {colors} from '@/shared/styles/colors';
 import UserListScreen from '../screens/userManagement/UserListScreen';
 import RoleListScreen from '../screens/userManagement/RoleListScreen';
 
@@ -30,8 +28,8 @@ const SellerSubTabNavigator = () => {
                 },
             }}
         >
-            <Tab.Screen name="Sellers List" component={UserListScreen} />
-            <Tab.Screen name="Roles List" component={RoleListScreen} />
+            <Tab.Screen name="Sellers Management" component={UserListScreen}/>
+            <Tab.Screen name="Roles Management" component={RoleListScreen}/>
         </Tab.Navigator>
     );
 };
