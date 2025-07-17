@@ -4,3 +4,4 @@ export * from './role.types';
 export * from './product.types';
 export * from './category.types';
 export * from './banner.types';
+export * from './order.types';
