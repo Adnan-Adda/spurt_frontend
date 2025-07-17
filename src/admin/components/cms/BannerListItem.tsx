@@ -17,8 +17,10 @@ interface BannerListItemProps {
 }
 
 const BannerListItem: React.FC<BannerListItemProps> = ({banner, onPress, onDelete}) => {
-    const imageUrl = banner.image
-        ? `http://localhost:8000/api/media/resize-image?width=100&height=100&path=${banner.imagePath}&name=${banner.image}`
+    // Use the correct fields from the bannerImages array
+    const primaryImage = banner.bannerImages?.find(img => img.isPrimary);
+    const imageUrl = primaryImage
+        ? `http://localhost:8000/api/media/resize-image?width=100&height=100&path=${primaryImage.imagePath}&name=${primaryImage.imageName}`
         : 'https://placehold.co/100x100/e9ecef/495057?text=No+Image';
 
     return (
