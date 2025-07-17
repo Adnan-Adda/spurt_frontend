@@ -21,6 +21,7 @@ import ConfirmationModal from "@/shared/components/common/ConfirmationModal";
 type CMSStackParamList = {
     BannerList: undefined;
     CreateBanner: undefined;
+    EditBanner: { bannerId: number };
 };
 type BannerListNavigationProp = StackNavigationProp<CMSStackParamList, 'BannerList'>;
 
@@ -109,7 +110,7 @@ const BannerListScreen = () => {
                 renderItem={({item}) => (
                     <BannerListItem
                         banner={item}
-                        onPress={() => alert('Edit banner not yet implemented.')}
+                        onPress={() => navigation.navigate('EditBanner', { bannerId: item.bannerId })}
                         onDelete={() => handleDeletePress(item)}
                     />
                 )}
