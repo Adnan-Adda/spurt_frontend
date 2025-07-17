@@ -26,6 +26,7 @@ const SellerSubTabNavigator = () => {
                 tabBarLabelStyle: {
                     fontWeight: 'bold',
                 },
+                swipeEnabled: false,
             }}
         >
             <Tab.Screen name="Sellers Management" component={UserListScreen}/>
