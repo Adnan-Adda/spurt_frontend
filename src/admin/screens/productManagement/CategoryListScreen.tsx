@@ -18,6 +18,8 @@ import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
 import ConfirmationModal from '../../../shared/components/common/ConfirmationModal';
 import {parseApiError} from '@/shared/utils/errorHandler';
+import Breadcrumb from "@/admin/components/common/Breadcrumb";
+import ListHeader from "@/admin/components/common/ListHeader";
 
 type AdminStackParamList = {
     CategoryList: undefined;
@@ -98,9 +100,14 @@ const CategoryListScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <AppButton title="Create New Category" onPress={() => navigation.navigate('CreateCategory')}/>
-            </View>
+            <Breadcrumb path={['Products', 'Manage Categories']}/>
+            <ListHeader
+                itemCount={categories.length}
+                itemType="Categories"
+                createButton={
+                    <AppButton title="Create Category" onPress={() => navigation.navigate('CreateCategory')}/>
+                }
+            />
             <FlatList
                 data={categories}
                 keyExtractor={(item) => item.categoryId.toString()}
