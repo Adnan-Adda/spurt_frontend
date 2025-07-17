@@ -10,6 +10,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from '@/shared/styles/colors';
 import BannerListScreen from '../screens/cms/BannerListScreen';
 import CreateBannerScreen from '../screens/cms/CreateBannerScreen';
+import EditBannerScreen from "@/admin/screens/cms/EditBannerScreen";
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,11 @@ const CMSStack = () => {
                 name="CreateBanner"
                 component={CreateBannerScreen}
                 options={{title: 'Create New Banner'}}
+            />
+            <Stack.Screen
+                name="EditBanner"
+                component={EditBannerScreen}
+                options={{title: 'Edit Banner'}}
             />
         </Stack.Navigator>
     );
