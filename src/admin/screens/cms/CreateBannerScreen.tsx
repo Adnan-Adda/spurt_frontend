@@ -8,7 +8,7 @@ import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {createBannerApi} from '../../api/banner';
-import {NewBanner, BannerImage} from '@/shared/types';
+import {NewBanner} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
 import ErrorText from '../../../shared/components/common/ErrorText';
@@ -32,13 +32,14 @@ const CreateBannerScreen = () => {
         setForm(prev => ({...prev, [name]: value}));
     };
 
-    const handleImageChange = (field: keyof BannerImage, value: string) => {
+    const handleImageChange = (field: 'image' | 'containerName', value: string) => {
         setForm(prev => {
             const newBannerImage = [...(prev.bannerImage || [])];
             newBannerImage[0] = {...newBannerImage[0], [field]: value};
             return {...prev, bannerImage: newBannerImage};
         });
     };
+
 
     const handleCreateBanner = async () => {
         if (!form.title) {
