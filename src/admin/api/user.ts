@@ -14,7 +14,7 @@ export const createUserApi = (userData: NewUser) => {
 };
 
 
-export const getUserListApi = (limit: number, offset: number, keyword: string = '') => {
+export const getUserListApi = (limit: number, offset: number, keyword: string = '', count = false) => {
     const params = {
         limit,
         offset,
