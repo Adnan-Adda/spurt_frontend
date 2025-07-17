@@ -277,40 +277,6 @@ const UserListScreen = () => {
             Alert.alert('Error', err.message || 'An unknown error occurred.');
         }
     };
-
-    // const handleDeletePress = (user: User) => {
-    //     Alert.alert(
-    //         'Delete User',
-    //         `Are you sure you want to delete ${user.firstName} ${user.lastName}? This action cannot be undone.`,
-    //         [
-    //             {
-    //                 text: 'Cancel',
-    //                 onPress: () => console.log('[UserListScreen] Delete cancelled.'),
-    //                 style: 'cancel',
-    //             },
-    //             {
-    //                 text: 'Delete',
-    //                 onPress: () => deleteUser(user.userId),
-    //                 style: 'destructive',
-    //             },
-    //         ]
-    //     );
-    // };
-    //
-    // const deleteUser = async (userId: number) => {
-    //     try {
-    //         const response = await deleteUserApi(userId);
-    //         if (response.data && response.data.status === 1) {
-    //             Alert.alert('Success', 'User deleted successfully.');
-    //             // Refresh the list to show the user has been removed
-    //             fetchUsers();
-    //         } else {
-    //             throw new Error(response.data.message || 'Failed to delete user.');
-    //         }
-    //     } catch (err: any) {
-    //         Alert.alert('Error', err.message || 'An unknown error occurred.');
-    //     }
-    // };
     if (loading) {
         return <LoadingSpinner/>;
     }
