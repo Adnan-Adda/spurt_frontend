@@ -15,6 +15,7 @@ import {colors} from '@/shared/styles/colors';
 import ProductStack from "@/admin/navigation/ProductStack";
 import CMSStack from "@/admin/navigation/CMSStack";
 import OrderStack from "@/admin/navigation/OrderStack";
+import SettingsStack from "@/admin/navigation/SettingsStack";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -48,6 +49,8 @@ const MainTabNavigator = () => {
                         iconName = focused ? 'document-text' : 'document-text-outline';
                     } else if (route.name === 'Orders') {
                         iconName = focused ? 'cart' : 'cart-outline';
+                    }else if (route.name === 'Settings') {
+                        iconName = focused ? 'settings' : 'settings-outline';
                     } else {
                         iconName = 'alert-circle'; // Fallback icon
                     }
@@ -63,6 +66,7 @@ const MainTabNavigator = () => {
             <Tab.Screen name="Products" component={ProductStack}/>
             <Tab.Screen name="CMS" component={CMSStack}/>
             <Tab.Screen name="Orders" component={OrderStack}/>
+            <Tab.Screen name="Settings" component={SettingsStack}/>
             {/* We will add more tabs like 'Marketplace' and 'CMS' here later */
             }
         </Tab.Navigator>
