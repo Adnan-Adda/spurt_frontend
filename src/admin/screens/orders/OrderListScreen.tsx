@@ -20,6 +20,7 @@ import {parseApiError} from '@/shared/utils/errorHandler';
 
 type OrderStackParamList = {
     OrderList: undefined;
+    OrderDetail: { orderId: number, orderPrefixId: string };
 };
 type OrderListNavigationProp = StackNavigationProp<OrderStackParamList, 'OrderList'>;
 
@@ -73,7 +74,7 @@ const OrderListScreen = () => {
                 renderItem={({item}) => (
                     <OrderListItem
                         order={item}
-                        onPress={() => alert('Order detail view not yet implemented.')}
+                        onPress={() => navigation.navigate('OrderDetail', { orderId: item.orderId, orderPrefixId: item.orderPrefixId })}
                     />
                 )}
                 ListEmptyComponent={
