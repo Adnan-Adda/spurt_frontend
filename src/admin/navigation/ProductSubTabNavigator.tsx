@@ -28,6 +28,7 @@ const ProductSubTabNavigator = () => {
                 tabBarLabelStyle: {
                     fontWeight: 'bold',
                 },
+                swipeEnabled: false,
             }}
         >
             <Tab.Screen name="Manage Products" component={ProductListScreen}/>
