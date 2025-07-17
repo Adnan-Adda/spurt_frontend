@@ -13,6 +13,7 @@ import DashboardStack from './DashboardStack';
 import SellerStack from './SellerStack';
 import {colors} from '@/shared/styles/colors';
 import ProductStack from "@/admin/navigation/ProductStack";
+import CMSStack from "@/admin/navigation/CMSStack";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -38,6 +39,10 @@ const MainTabNavigator = () => {
                         iconName = focused ? 'stats-chart' : 'stats-chart-outline';
                     } else if (route.name === 'Sellers') {
                         iconName = focused ? 'people' : 'people-outline';
+                    } else if (route.name === 'Products') {
+                        iconName = focused ? 'cube' : 'cube-outline';
+                    } else if (route.name === 'CMS') {
+                        iconName = focused ? 'document-text' : 'document-text-outline';
                     } else {
                         iconName = 'alert-circle'; // Fallback icon
                     }
@@ -49,7 +54,8 @@ const MainTabNavigator = () => {
         >
             <Tab.Screen name="Dashboard" component={DashboardStack}/>
             <Tab.Screen name="Sellers" component={SellerStack}/>
-            <Tab.Screen name="Products" component={ProductStack} />
+            <Tab.Screen name="Products" component={ProductStack}/>
+            <Tab.Screen name="CMS" component={CMSStack}/>
             {/* We will add more tabs like 'Marketplace' and 'CMS' here later */}
         </Tab.Navigator>
     );
