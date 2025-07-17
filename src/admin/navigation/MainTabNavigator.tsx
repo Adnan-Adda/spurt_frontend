@@ -32,6 +32,8 @@ const MainTabNavigator = () => {
                 tabBarStyle: {
                     backgroundColor: colors.background,
                 },
+                swipeEnabled: false,
+
                 tabBarIcon: ({focused, color}) => {
                     let iconName: keyof typeof Ionicons.glyphMap;
 
