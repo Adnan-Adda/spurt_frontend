@@ -14,6 +14,7 @@ import SellerStack from './SellerStack';
 import {colors} from '@/shared/styles/colors';
 import ProductStack from "@/admin/navigation/ProductStack";
 import CMSStack from "@/admin/navigation/CMSStack";
+import OrderStack from "@/admin/navigation/OrderStack";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -45,20 +46,25 @@ const MainTabNavigator = () => {
                         iconName = focused ? 'cube' : 'cube-outline';
                     } else if (route.name === 'CMS') {
                         iconName = focused ? 'document-text' : 'document-text-outline';
+                    } else if (route.name === 'Orders') {
+                        iconName = focused ? 'cart' : 'cart-outline';
                     } else {
                         iconName = 'alert-circle'; // Fallback icon
                     }
 
                     // You can return any component that you like here!
                     return <Ionicons name={iconName} size={22} color={color}/>;
-                },
+                }
+                ,
             })}
         >
             <Tab.Screen name="Dashboard" component={DashboardStack}/>
             <Tab.Screen name="Sellers" component={SellerStack}/>
             <Tab.Screen name="Products" component={ProductStack}/>
             <Tab.Screen name="CMS" component={CMSStack}/>
-            {/* We will add more tabs like 'Marketplace' and 'CMS' here later */}
+            <Tab.Screen name="Orders" component={OrderStack}/>
+            {/* We will add more tabs like 'Marketplace' and 'CMS' here later */
+            }
         </Tab.Navigator>
     );
 };
