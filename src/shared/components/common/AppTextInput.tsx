@@ -11,7 +11,7 @@ interface AppTextInputProps {
     label: string;
     value: string;
     onChangeText: (text: string) => void;
-    placeholder: string;
+    placeholder?: string;
     secureTextEntry?: boolean;
     error?: string;
     keyboardType?: KeyboardTypeOptions;
@@ -22,13 +22,13 @@ interface AppTextInputProps {
 const AppTextInput: React.FC<AppTextInputProps> = ({
                                                        label,
                                                        value,
-                                                       onChangeText,
-                                                       placeholder,
-                                                       secureTextEntry,
-                                                       error,
-                                                       keyboardType,
-                                                       multiline,
-                                                       numberOfLines,
+                                                       onChangeText = () => {},
+                                                       placeholder = '',
+                                                       secureTextEntry = false,
+                                                       error = null,
+                                                       keyboardType = 'default',
+                                                       multiline = false,
+                                                       numberOfLines = 1,
                                                    }) => {
     return (
         <View style={textInputStyles.container}>
