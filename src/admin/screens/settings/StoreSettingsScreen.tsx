@@ -1,12 +1,15 @@
 /*
  * =================================================================
- * == FILE: src/admin/screens/settings/StoreSettingsScreen.tsx
+ * == FILE: src/admin/screens/settings/StoreSettingsScreen.tsx (MODIFIED)
  * =================================================================
+ *
+ * Implemented the correct two-step data fetching process:
+ * 1. Fetch the settings list to get the ID.
+ * 2. Fetch the setting detail using the ID to populate the form.
  */
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { getSettingsApi, createSettingsApi } from '../../api/settings';
+import { getSettingsListApi, getSettingDetailApi, createSettingsApi } from '../../api/settings';
 import { StoreSettings } from '@/shared/types';
 import { colors } from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
@@ -24,12 +27,21 @@ const StoreSettingsScreen = () => {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const response = await getSettingsApi();
-                if (response.data && response.data.status === 1 && response.data.data.length > 0) {
-                    // The API returns a list, so we take the first item
-                    setForm(response.data.data[0]);
+                // Step 1: Get the settings list to find the ID
+                const listResponse = await getSettingsListApi();
+                if (listResponse.data && listResponse.data.status === 1 && listResponse.data.data.length > 0) {
+                    const settingsId = listResponse.data.data[0].id;
+                    if (!settingsId) {
+                        throw new Error("Settings ID not found in the list response.");
+                    }
+                    // Step 2: Use the ID to get the full details
+                    const detailResponse = await getSettingDetailApi(settingsId);
+                    if (detailResponse.data && detailResponse.data.status === 1) {
+                        setForm(detailResponse.data.data);
+                    } else {
+                        throw new Error("Failed to fetch setting details.");
+                    }
                 } else {
-                    // If no settings exist, initialize with empty form
                     console.log("No existing settings found, initializing new form.");
                 }
             } catch (err) {
