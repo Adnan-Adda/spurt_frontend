@@ -9,12 +9,17 @@
 import apiClient from '../../shared/api/apiClient';
 import { StoreSettings } from '@/shared/types';
 
-// The API doc uses GET /settings to get the list, but since there's
-// usually only one setting object, we'll get the first one.
-export const getSettingsApi = () => {
+// This function gets the summary list to find the settingsId
+export const getSettingsListApi = () => {
     return apiClient.get('/settings');
 };
 
+// This function gets the full, detailed settings object
+export const getSettingDetailApi = (settingsId: number) => {
+    return apiClient.get(`/settings/${settingsId}`);
+};
+
+// This function saves/updates the settings
 export const createSettingsApi = (settingsData: Partial<StoreSettings>) => {
     return apiClient.post('/settings', settingsData);
 };
