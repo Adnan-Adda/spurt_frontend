@@ -4,11 +4,12 @@
  * =================================================================
  */
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { colors } from '@/shared/styles/colors';
+import {createStackNavigator} from '@react-navigation/stack';
+import {colors} from '@/shared/styles/colors';
 
 import SettingsScreen from '../screens/settings/SettingsScreen';
 import StoreSettingsScreen from '../screens/settings/StoreSettingsScreen';
+import PaymentSettingsScreen from "@/admin/screens/settings/PaymentSettingsScreen";
 
 const Stack = createStackNavigator();
 
@@ -28,12 +29,17 @@ const SettingsStack = () => {
             <Stack.Screen
                 name="SettingsMenu"
                 component={SettingsScreen}
-                options={{ title: 'Settings' }}
+                options={{title: 'Settings'}}
             />
             <Stack.Screen
                 name="StoreSettings"
                 component={StoreSettingsScreen}
-                options={{ title: 'Store Settings' }}
+                options={{title: 'Store Settings'}}
+            />
+            <Stack.Screen
+                name={"PaymentSettings"}
+                component={PaymentSettingsScreen}
+                options={{title: 'Payment Settings'}}
             />
         </Stack.Navigator>
     );
