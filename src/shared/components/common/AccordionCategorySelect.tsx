@@ -135,7 +135,7 @@ const AccordionCategorySelect: React.FC<AccordionCategorySelectProps> = ({
             try {
                 setLoading(true);
                 // Fetch all categories - using a large limit to avoid pagination issues
-                const response = await getCategoryListApi(10, 2);
+                const response = await getCategoryListApi(0, 0);
                 const builtHierarchy = buildHierarchy(response.data.data);
                 setHierarchy(builtHierarchy);
             } catch (err: any) {
