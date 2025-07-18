@@ -13,6 +13,8 @@ import AppButton from '../../../shared/components/common/AppButton';
 type SettingsStackParamList = {
     SettingsMenu: undefined;
     StoreSettings: undefined;
+    PaymentSettings: undefined;
+    // We will add more screens here later
 };
 type SettingsScreenNavigationProp = StackNavigationProp<SettingsStackParamList, 'SettingsMenu'>;
 
@@ -25,6 +27,10 @@ const SettingsScreen = () => {
                 <AppButton
                     title="Store Settings"
                     onPress={() => navigation.navigate('StoreSettings')}
+                />
+                <AppButton
+                    title="Payment Settings"
+                    onPress={() => navigation.navigate('PaymentSettings')}
                 />
                 {/* We will add more settings buttons here later */}
             </View>
