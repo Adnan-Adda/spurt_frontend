@@ -11,7 +11,7 @@ import apiClient from '../../shared/api/apiClient';
 import {NewProduct, UpdateProduct} from "@/shared/types";
 
 // The API supports pagination, so we can pass limit and offset
-export const getProductListApi = (limit: number, offset: number, keyword: string = '') => {
+export const getProductListApi = (limit: number, offset: number, keyword: string = '', count = false) => {
     const params = {
         limit,
         offset,
