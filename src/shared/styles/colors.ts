@@ -17,4 +17,6 @@ export const colors = {
     danger: '#dc3545',
     success: '#28a745',
     disabled: '#ced4da',
+    lightGray: '#d3d3d3',
+    darkGray: '#808080',
 };
