@@ -3,17 +3,17 @@
  * == FILE: src/admin/screens/productManagement/EditProductScreen.tsx
  * =================================================================
  */
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { getProductDetailApi, updateProductApi } from '../../api/product';
-import { Product, UpdateProduct } from '@/shared/types';
-import { colors } from '@/shared/styles/colors';
+import React, {useState, useEffect, useCallback} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
+import {getProductDetailApi, updateProductApi} from '../../api/product';
+import {NewProduct, Product, UpdateProduct} from '@/shared/types';
+import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
 import ErrorText from '../../../shared/components/common/ErrorText';
 import ProductDetailForm from '../../components/productManagement/ProductDetailForm';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';
-import { parseApiError } from '@/shared/utils/errorHandler';
+import {parseApiError} from '@/shared/utils/errorHandler';
 
 type ParamList = {
     EditProduct: {
@@ -24,58 +24,51 @@ type ParamList = {
 const EditProductScreen = () => {
     const navigation = useNavigation();
     const route = useRoute<RouteProp<ParamList, 'EditProduct'>>();
-    const { productId } = route.params;
-
+    const {productId} = route.params;
     const [loading, setLoading] = useState(false);
-    const [pageLoading, setPageLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [form, setForm] = useState<Partial<UpdateProduct>>({});
+    const [initialProductData, setInitialProductData] = useState<Partial<NewProduct> | undefined>(undefined);
 
-    useEffect(() => {
-        const loadInitialData = async () => {
-            try {
-                const response = await getProductDetailApi(productId);
-                if (response.data && response.data.status === 1) {
-                    const productData: Product = response.data.data;
-                    setForm({
-                        productName: productData.name,
-                        productDescription: productData.productDescription,
-                        sku: productData.sku,
-                        upc: productData.upc,
-                        hsn: productData.hsn,
-                        price: parseFloat(productData.price),
-                        quantity: productData.quantity,
-                        categoryId: productData.Category?.map(c => c.categoryId).join(',') || '',
-                        image: '', // Image is not sent back, leave blank for update
-                        status: productData.isActive,
-                        sortOrder: productData.sortOrder,
-                        dateAvailable: productData.dateAvailable.split('T')[0],
-                    });
-                } else {
-                    throw new Error('Failed to load product details');
-                }
-            } catch (e: any) {
-                setError(parseApiError(e));
-            } finally {
-                setPageLoading(false);
+    const loadInitialData = useCallback(async () => {
+        try {
+            const response = await getProductDetailApi(productId);
+            if (response.data?.status === 1) {
+                const productData: Product = response.data.data;
+                const formattedData: Partial<NewProduct> = {
+                    productName: productData.name,
+                    price: parseFloat(productData.price),
+                    quantity: productData.quantity,
+                    categoryId: [productData.Category?.[0]?.categoryId.toString()],
+                    status: Boolean(productData.isActive),
+                    image: productData.productImage,
+                };
+                setInitialProductData(formattedData);
+            } else {
+                throw new Error('Failed to load product details');
             }
-        };
-        loadInitialData();
+        } catch (e: any) {
+            setError(parseApiError(e));
+        } finally {
+            setLoading(false); // Only set pageLoading to false
+        }
     }, [productId]);
 
-    const handleInputChange = (name: keyof UpdateProduct, value: string | number) => {
-        setForm(prev => ({ ...prev, [name]: value }));
-    };
+    // 2. Call the function on initial component load
+    useEffect(() => {
+        loadInitialData()
+    }, [productId]);
 
-    const handleUpdateProduct = async () => {
+    const handleUpdateProduct = async (values: any) => {
         setLoading(true);
         setError(null);
         try {
-            const payload = { ...form, productId } as UpdateProduct;
-            const response = await updateProductApi(productId, payload);
+            values.productId = productId;
+            const response = await updateProductApi(productId, values);
             if (response.data && response.data.status === 1) {
+                // TODO: Either remove the helper or implemented, used for resetting the form when updating product in product screen
+                setInitialProductData(values);
                 Alert.alert('Success', 'Product updated successfully!', [
-                    { text: 'OK', onPress: () => navigation.goBack() },
+                    {text: 'OK', onPress: () => navigation.goBack()},
                 ]);
             } else {
                 throw new Error(response.data.message || 'Failed to update product.');
@@ -87,16 +80,19 @@ const EditProductScreen = () => {
         }
     };
 
-    if (pageLoading) {
-        return <LoadingSpinner />;
+    if (loading) {
+        return <LoadingSpinner/>;
     }
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView style={styles.container}>
-                <ProductDetailForm form={form} onInputChange={handleInputChange} />
-                {error && <ErrorText message={error} />}
-                <AppButton title="Update Product" onPress={handleUpdateProduct} loading={loading} />
+                <ProductDetailForm
+                    initialValues={initialProductData}
+                    onSubmit={handleUpdateProduct}
+                    isEditMode={true}
+                />
+                {error && <ErrorText message={error}/>}
             </ScrollView>
         </SafeAreaView>
     );
