@@ -185,7 +185,7 @@ const EditUserScreen = () => {
                     lastName: user.lastName,
                     email: user.email,
                     username: user.username,
-                    userGroupId: user.usergroup.groupId,
+                    userGroupId: user.userGroup.groupId,
                 });
 
             } catch (e: any) {
