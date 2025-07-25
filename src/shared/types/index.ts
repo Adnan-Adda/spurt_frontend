@@ -7,3 +7,4 @@ export * from './banner.types';
 export * from './order.types';
 export * from './settings.types';
 export * from './payment.types';
+export * from './types';
