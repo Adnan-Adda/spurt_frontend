@@ -4,16 +4,16 @@
  * =================================================================
  */
 
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { updateCategoryApi } from '../../api/category';
-import { Category, UpdateCategory } from '@/shared/types';
-import { colors } from '@/shared/styles/colors';
+import React, {useState, useEffect} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
+import {categoryService} from '../../api/category';
+import {Category, UpdateCategory} from '@/shared/types';
+import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
 import ErrorText from '../../../shared/components/common/ErrorText';
 import CategoryDetailForm from '../../components/productManagement/CategoryDetailForm';
-import { parseApiError } from '@/shared/utils/errorHandler';
+import {parseApiError} from '@/shared/utils/errorHandler';
 
 type ParamList = {
     EditCategory: {
@@ -24,7 +24,7 @@ type ParamList = {
 const EditCategoryScreen = () => {
     const navigation = useNavigation();
     const route = useRoute<RouteProp<ParamList, 'EditCategory'>>();
-    const { category } = route.params;
+    const {category} = route.params;
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -41,7 +41,7 @@ const EditCategoryScreen = () => {
     }, [category]);
 
     const handleInputChange = (name: keyof UpdateCategory, value: string | number | any) => {
-        setForm(prev => ({ ...prev, [name]: value }));
+        setForm(prev => ({...prev, [name]: value}));
     };
 
     const handleUpdateCategory = async () => {
@@ -65,14 +65,10 @@ const EditCategoryScreen = () => {
                 payload.image = form.image;
             }
 
-            const response = await updateCategoryApi(category.categoryId, payload);
-            if (response.data && response.data.status === 1) {
-                Alert.alert('Success', 'Category updated successfully!', [
-                    { text: 'OK', onPress: () => navigation.goBack() },
-                ]);
-            } else {
-                throw new Error(response.data.message || 'Failed to update category.');
-            }
+            const response = await categoryService.updateCategory(category.categoryId, payload);
+            Alert.alert('Success', 'Category updated successfully!', [
+                {text: 'OK', onPress: () => navigation.goBack()},
+            ]);
         } catch (err: any) {
             const errorMessage = parseApiError(err);
             setError(errorMessage);
@@ -84,9 +80,9 @@ const EditCategoryScreen = () => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView style={styles.container}>
-                <CategoryDetailForm form={form} onInputChange={handleInputChange} />
-                {error && <ErrorText message={error} />}
-                <AppButton title="Update Category" onPress={handleUpdateCategory} loading={loading} />
+                <CategoryDetailForm form={form} onInputChange={handleInputChange}/>
+                {error && <ErrorText message={error}/>}
+                <AppButton title="Update Category" onPress={handleUpdateCategory} loading={loading}/>
             </ScrollView>
         </SafeAreaView>
     );

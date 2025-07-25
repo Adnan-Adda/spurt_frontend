@@ -6,7 +6,7 @@
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {createCategoryApi} from '../../api/category';
+import {categoryService} from '../../api/category';
 import {NewCategory} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
@@ -38,14 +38,10 @@ const CreateCategoryScreen = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await createCategoryApi(form);
-            if (response.data && response.data.status === 1) {
-                Alert.alert('Success', 'Category created successfully!', [
-                    {text: 'OK', onPress: () => navigation.goBack()},
-                ]);
-            } else {
-                throw new Error(response.data.message || 'Failed to create category.');
-            }
+            const response = await categoryService.createCategory(form);
+            Alert.alert('Success', 'Category created successfully!', [
+                {text: 'OK', onPress: () => navigation.goBack()},
+            ]);
         } catch (err: any) {
             const errorMessage = parseApiError(err);
             setError(errorMessage);

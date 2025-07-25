@@ -9,7 +9,7 @@ import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {getCategoryListApi, deleteCategoryApi} from '../../api/category';
+import {categoryService} from '../../api/category';
 import {Category} from '@/shared/types';
 import CategoryListItem from '../../components/productManagement/CategoryListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';
@@ -40,12 +40,8 @@ const CategoryListScreen = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await getCategoryListApi(50, 0);
-            if (response.data && response.data.status === 1) {
-                setCategories(response.data.data);
-            } else {
-                throw new Error(response.data.message || 'Failed to fetch categories');
-            }
+            const response = await categoryService.getCategories({limit: 50, offset: 0});
+            setCategories(response.data);
         } catch (err: any) {
             setError(err.message || 'An unknown error occurred');
         } finally {
@@ -74,12 +70,8 @@ const CategoryListScreen = () => {
 
     const deleteCategory = async (categoryId: number) => {
         try {
-            const response = await deleteCategoryApi(categoryId);
-            if (response.data && response.data.status === 1) {
-                fetchCategories();
-            } else {
-                throw new Error(response.data.message || 'Failed to delete category.');
-            }
+            const response = await categoryService.deleteCategory(categoryId);
+            fetchCategories();
         } catch (err: any) {
             const errorMessage = parseApiError(err);
             setError(errorMessage);
