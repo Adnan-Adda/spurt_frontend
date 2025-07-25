@@ -4,6 +4,19 @@
  * =================================================================
  */
 
+export interface Image {
+    image?: string;
+    containerName?: string;
+    defaultImage?: number;
+}
+
+export interface ImageUpload{
+    image: string;
+    path: string;
+    fileName: string;
+    fileType: number;
+    documentId?: number;
+}
 
 export interface Product {
     productId: number;
@@ -32,15 +45,14 @@ export interface NewProduct {
     sku: string;
     upc: string;
     hsn: string;
-    image: string;
-    categoryId: string;
+    image: Image[];
+    categoryId: string[] | string;
     price: number;
     quantity: number;
     dateAvailable: string;
-    status: number;
+    status: number | boolean;
     sortOrder: number;
 }
 
 export interface UpdateProduct extends NewProduct {
-    productId: number;
 }
