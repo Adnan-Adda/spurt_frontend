@@ -6,7 +6,7 @@
  * This file contains API functions for fetching user roles/groups.
  * API Endpoint ID: ROLE-003
  */
-import apiClient from '../../shared/api/apiClient';
+import apiClient from './apiClient';
 import {NewRole, UpdateRole} from '@/shared/types';
 
 export const getRolesApi = () => {

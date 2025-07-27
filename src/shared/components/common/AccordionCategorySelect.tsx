@@ -16,7 +16,7 @@ import {MaterialIcons} from '@expo/vector-icons';
 
 import {colors} from '@/shared/styles/colors';
 import {Category} from '@/shared/types/category.types';
-import {categoryService} from '@/admin/api/category';
+import {categoryService} from '@/shared/api/category';
 import ErrorText from "@/shared/components/common/ErrorText";
 
 // Enable LayoutAnimation on Android

@@ -9,7 +9,7 @@ import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {categoryService} from '../../api/category';
+import {categoryService} from '../../../shared/api/category';
 import {Category} from '@/shared/types';
 import CategoryListItem from '../../components/productManagement/CategoryListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';

@@ -164,8 +164,8 @@
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {getRolesApi} from '../../api/role';
-import {createUserApi} from '../../api/user';
+import {getRolesApi} from '../../../shared/api/role';
+import {createUserApi} from '../../../shared/api/user';
 import {Role, NewUser} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';

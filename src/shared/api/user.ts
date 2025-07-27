@@ -6,7 +6,7 @@
  * This file contains API functions for creating a new user.
  * API Endpoint ID: AUTH-002
  */
-import apiClient from '../../shared/api/apiClient';
+import apiClient from './apiClient';
 import {NewUser, UpdateUser} from '@/shared/types';
 
 export const createUserApi = (userData: NewUser) => {

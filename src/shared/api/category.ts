@@ -6,7 +6,7 @@
  * This file contains API functions for fetching category data.
  * API Endpoint ID: CAT-007
  */
-import apiClient from '../../shared/api/apiClient';
+import apiClient from './apiClient';
 import {
     Category,
     NewCategory,

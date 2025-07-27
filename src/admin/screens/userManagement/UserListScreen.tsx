@@ -9,7 +9,7 @@ import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text, Alert} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {getUserListApi, deleteUserApi} from '../../api/user';
+import {getUserListApi, deleteUserApi} from '../../../shared/api/user';
 import {User} from '@/shared/types';
 import UserListItem from '../../components/userManagement/UserListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';

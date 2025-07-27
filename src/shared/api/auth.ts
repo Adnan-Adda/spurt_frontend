@@ -6,7 +6,7 @@
  * This file contains functions for making authentication-related
  * API calls, such as logging in.
  */
-import apiClient from '../../shared/api/apiClient';
+import apiClient from './apiClient';
 import {LoginCredentials} from '@/shared/types';
 
 // Corresponds to API endpoint: AUTH-010

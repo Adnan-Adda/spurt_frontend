@@ -8,7 +8,7 @@
  * API Endpoint ID: PROD-025
  */
 
-import apiClient from '../../shared/api/apiClient';
+import apiClient from './apiClient';
 import {
     Product,
     NewProduct,

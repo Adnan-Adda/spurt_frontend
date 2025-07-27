@@ -1,4 +1,4 @@
-import apiClient from '../../shared/api/apiClient';
+import apiClient from './apiClient';
 import {ImageUpload} from "@/shared/types";
 
 class MediaService {

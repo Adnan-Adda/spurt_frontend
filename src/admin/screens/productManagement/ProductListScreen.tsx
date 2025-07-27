@@ -9,7 +9,7 @@ import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {productService, getProductListApi} from '../../api/product';
+import {productService, getProductListApi} from '../../../shared/api/product';
 import {Product} from '@/shared/types';
 import ProductListItem from '../../components/productManagement/ProductListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';

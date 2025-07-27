@@ -6,7 +6,7 @@
  * This file contains API functions for managing store settings.
  * API Endpoint IDs: SET-002, SET-001
  */
-import apiClient from '../../shared/api/apiClient';
+import apiClient from './apiClient';
 import { StoreSettings } from '@/shared/types';
 
 // This function gets the summary list to find the settingsId

@@ -5,7 +5,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Alert } from 'react-native';
-import { getPaymentSettingsApi, updatePaymentSettingsApi } from '../../api/payment';
+import { getPaymentSettingsApi, updatePaymentSettingsApi } from '../../../shared/api/payment';
 import { PaymentSettings } from '@/shared/types';
 import { colors } from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';

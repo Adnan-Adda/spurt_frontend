@@ -7,7 +7,7 @@ import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {getBannerListApi, deleteBannerApi} from '../../api/banner';
+import {getBannerListApi, deleteBannerApi} from '../../../shared/api/banner';
 import {Banner} from '@/shared/types';
 import BannerListItem from '../../components/cms/BannerListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';

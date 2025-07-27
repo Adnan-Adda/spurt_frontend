@@ -9,7 +9,7 @@ import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {getOrderListApi} from '../../api/order';
+import {getOrderListApi} from '../../../shared/api/order';
 import {Order} from '@/shared/types';
 import OrderListItem from '../../components/orders/OrderListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';

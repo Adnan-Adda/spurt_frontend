@@ -6,7 +6,7 @@
  * This file contains API functions for managing banners.
  * API Endpoint IDs: BNR-005, BNR-001
  */
-import apiClient from '../../shared/api/apiClient';
+import apiClient from './apiClient';
 import {NewBanner, UpdateBanner} from '@/shared/types';
 
 export const getBannerListApi = (limit: number, offset: number) => {

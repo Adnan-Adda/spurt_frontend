@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, Pressable, Image, ActivityIndicator} from 'react-native';
-import {mediaService} from '@/admin/api/media';
+import {mediaService} from '@/shared/api/media';
 import {Image as ProductImage, ImageUpload} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import ErrorText from "@/shared/components/common/ErrorText";

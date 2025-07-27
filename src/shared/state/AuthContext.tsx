@@ -8,7 +8,7 @@
  * functions to any component wrapped in the `AuthProvider`.
  */
 import React, {createContext, useState, useEffect} from 'react';
-import {loginApi} from '@/admin/api/auth';
+import {loginApi} from '@/shared/api/auth';
 import {saveToken, getToken, removeToken, saveUser, getUser, removeUser} from '../utils/storage';
 import {LoginCredentials, User} from '@/shared/types';
 

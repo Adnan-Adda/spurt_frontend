@@ -8,7 +8,7 @@
 import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {getRolesApi, deleteRoleApi} from '../../api/role';
+import {getRolesApi, deleteRoleApi} from '../../../shared/api/role';
 import {Role} from '@/shared/types';
 import RoleListItem from '../../components/userManagement/RoleListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';
