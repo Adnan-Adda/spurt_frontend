@@ -6,7 +6,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import {getProductDetailApi, updateProductApi} from '../../api/product';
+import {productService} from '../../api/product';
 import {NewProduct, Product, UpdateProduct} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
@@ -31,21 +31,17 @@ const EditProductScreen = () => {
 
     const loadInitialData = useCallback(async () => {
         try {
-            const response = await getProductDetailApi(productId);
-            if (response.data?.status === 1) {
-                const productData: Product = response.data.data;
-                const formattedData: Partial<NewProduct> = {
-                    productName: productData.name,
-                    price: parseFloat(productData.price),
-                    quantity: productData.quantity,
-                    categoryId: [productData.Category?.[0]?.categoryId.toString()],
-                    status: Boolean(productData.isActive),
-                    image: productData.productImage,
-                };
-                setInitialProductData(formattedData);
-            } else {
-                throw new Error('Failed to load product details');
-            }
+            const response = await productService.getProduct(productId);
+            const productData: Product = response.data;
+            const formattedData: Partial<NewProduct> = {
+                productName: productData.name,
+                price: parseFloat(productData.price),
+                quantity: productData.quantity,
+                categoryId: [productData.Category?.[0]?.categoryId.toString()],
+                status: Boolean(productData.isActive),
+                image: productData.productImage,
+            };
+            setInitialProductData(formattedData);
         } catch (e: any) {
             setError(parseApiError(e));
         } finally {
@@ -63,16 +59,12 @@ const EditProductScreen = () => {
         setError(null);
         try {
             values.productId = productId;
-            const response = await updateProductApi(productId, values);
-            if (response.data && response.data.status === 1) {
-                // TODO: Either remove the helper or implemented, used for resetting the form when updating product in product screen
-                setInitialProductData(values);
-                Alert.alert('Success', 'Product updated successfully!', [
-                    {text: 'OK', onPress: () => navigation.goBack()},
-                ]);
-            } else {
-                throw new Error(response.data.message || 'Failed to update product.');
-            }
+            const response = await productService.updateProduct(productId, values);
+            // TODO: Either remove the helper or implemented, used for resetting the form when updating product in product screen
+            setInitialProductData(values);
+            Alert.alert('Success', 'Product updated successfully!', [
+                {text: 'OK', onPress: () => navigation.goBack()},
+            ]);
         } catch (err: any) {
             setError(parseApiError(err));
         } finally {

@@ -9,7 +9,7 @@ import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {getProductListApi, deleteProductApi} from '../../api/product';
+import {productService, getProductListApi} from '../../api/product';
 import {Product} from '@/shared/types';
 import ProductListItem from '../../components/productManagement/ProductListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';
@@ -46,6 +46,7 @@ const ProductListScreen = () => {
             } else {
                 throw new Error(response.data.message || 'Failed to fetch products');
             }
+
         } catch (err: any) {
             setError(parseApiError(err));
         } finally {
@@ -74,12 +75,8 @@ const ProductListScreen = () => {
 
     const deleteProduct = async (productId: number) => {
         try {
-            const response = await deleteProductApi(productId);
-            if (response.data && response.data.status === 1) {
-                fetchProducts();
-            } else {
-                throw new Error(response.data.message || 'Failed to delete product.');
-            }
+            const response = await productService.deleteProduct(productId);
+            fetchProducts();
         } catch (err: any) {
             setError(parseApiError(err));
         }

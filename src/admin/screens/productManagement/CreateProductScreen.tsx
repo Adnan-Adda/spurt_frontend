@@ -6,7 +6,7 @@
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {createProductApi} from '../../api/product';
+import {productService} from '../../api/product';
 import {NewProduct} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
@@ -23,14 +23,7 @@ const CreateProductScreen = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await createProductApi(values);
-            if (response.data && response.data.status === 1) {
-                Alert.alert('Success', 'Product created successfully!', [
-                    {text: 'OK', onPress: () => navigation.goBack()},
-                ]);
-            } else {
-                throw new Error(response.data.message || 'Failed to create product.');
-            }
+            const response = await productService.createProduct(values);
         } catch (err: any) {
             setError(parseApiError(err));
         } finally {
