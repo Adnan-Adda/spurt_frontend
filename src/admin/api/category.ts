@@ -43,7 +43,6 @@ class CategoryService {
                     status: response.status,
                     message: response.message,
                     data: response.data,
-                    count: response.count,
                 };
             });
     }
