@@ -16,7 +16,7 @@ import {MaterialIcons} from '@expo/vector-icons';
 
 import {colors} from '@/shared/styles/colors';
 import {Category} from '@/shared/types/category.types';
-import {getCategoryListApi} from '@/admin/api/category';
+import {categoryService} from '@/admin/api/category';
 import ErrorText from "@/shared/components/common/ErrorText";
 
 // Enable LayoutAnimation on Android
@@ -135,8 +135,8 @@ const AccordionCategorySelect: React.FC<AccordionCategorySelectProps> = ({
             try {
                 setLoading(true);
                 // Fetch all categories - using a large limit to avoid pagination issues
-                const response = await getCategoryListApi(0, 0);
-                const builtHierarchy = buildHierarchy(response.data.data);
+                const response = await categoryService.getCategories({limit: 0, offset: 0});
+                const builtHierarchy = buildHierarchy(response.data);
                 setHierarchy(builtHierarchy);
             } catch (err: any) {
                 setFetchError('Failed to load categories.');
