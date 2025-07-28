@@ -7,7 +7,7 @@
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {createBannerApi} from '../../../shared/api/banner';
+import {bannerService} from '../../../shared/api/banner';
 import {NewBanner} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
@@ -49,14 +49,10 @@ const CreateBannerScreen = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await createBannerApi(form as NewBanner);
-            if (response.data && response.data.status === 1) {
-                Alert.alert('Success', 'Banner created successfully!', [
-                    {text: 'OK', onPress: () => navigation.goBack()},
-                ]);
-            } else {
-                throw new Error(response.data.message || 'Failed to create banner.');
-            }
+            const response = await bannerService.createBanner(form as NewBanner);
+            Alert.alert('Success', 'Banner created successfully!', [
+                {text: 'OK', onPress: () => navigation.goBack()},
+            ]);
         } catch (err: any) {
             setError(parseApiError(err));
         } finally {

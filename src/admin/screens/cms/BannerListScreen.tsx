@@ -7,7 +7,7 @@ import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {getBannerListApi, deleteBannerApi} from '../../../shared/api/banner';
+import {bannerService} from '../../../shared/api/banner';
 import {Banner} from '@/shared/types';
 import BannerListItem from '../../components/cms/BannerListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';
@@ -37,12 +37,7 @@ const BannerListScreen = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await getBannerListApi(50, 0);
-            if (response.data && response.data.status === 1) {
-                setBanners(response.data.data);
-            } else {
-                throw new Error(response.data.message || 'Failed to fetch banners');
-            }
+            const response = await bannerService.getBanners({limit: 50, offset: 0});
         } catch (err: any) {
             setError(parseApiError(err));
         } finally {
@@ -71,12 +66,8 @@ const BannerListScreen = () => {
 
     const deleteBanner = async (bannerId: number) => {
         try {
-            const response = await deleteBannerApi(bannerId);
-            if (response.data && response.data.status === 1) {
-                fetchBanners();
-            } else {
-                throw new Error(response.data.message || 'Failed to delete banner.');
-            }
+            const response = await bannerService.deleteBanner(bannerId);
+            fetchBanners();
         } catch (err: any) {
             setError(parseApiError(err));
         }

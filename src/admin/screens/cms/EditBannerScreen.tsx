@@ -6,7 +6,7 @@
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import {getBannerDetailApi, updateBannerApi} from '../../../shared/api/banner';
+import {bannerService} from '../../../shared/api/banner';
 import {Banner, UpdateBanner, NewBannerImage} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
@@ -34,29 +34,23 @@ const EditBannerScreen = () => {
     useEffect(() => {
         const loadInitialData = async () => {
             try {
-                const response = await getBannerDetailApi(bannerId);
-                if (response.data && response.data.status === 1) {
-                    const bannerData: Banner = response.data.data;
+                const response = await bannerService.getBanner(bannerId);
+                const bannerData: Banner = response.data;
+                // Map the API response structure (bannerImages) to the structure our form expects (bannerImage)
+                const mappedImages: NewBannerImage[] = bannerData.bannerImages?.map(img => ({
+                    image: img.imageName, // We can pre-fill with the name, but user will provide new base64
+                    containerName: img.imagePath,
+                    isPrimary: img.isPrimary,
+                })) || [{image: '', containerName: '', isPrimary: 1}];
 
-                    // --- THIS IS THE KEY FIX ---
-                    // Map the API response structure (bannerImages) to the structure our form expects (bannerImage)
-                    const mappedImages: NewBannerImage[] = bannerData.bannerImages?.map(img => ({
-                        image: img.imageName, // We can pre-fill with the name, but user will provide new base64
-                        containerName: img.imagePath,
-                        isPrimary: img.isPrimary,
-                    })) || [{image: '', containerName: '', isPrimary: 1}];
-
-                    setForm({
-                        title: bannerData.title,
-                        content: bannerData.content,
-                        link: bannerData.link,
-                        position: bannerData.position,
-                        status: bannerData.isActive,
-                        bannerImage: mappedImages,
-                    });
-                } else {
-                    throw new Error('Failed to load banner details');
-                }
+                setForm({
+                    title: bannerData.title,
+                    content: bannerData.content,
+                    link: bannerData.link,
+                    position: bannerData.position,
+                    status: bannerData.isActive,
+                    bannerImage: mappedImages,
+                });
             } catch (e: any) {
                 setError(parseApiError(e));
             } finally {
@@ -87,14 +81,10 @@ const EditBannerScreen = () => {
         setError(null);
         try {
             const payload = {...form, bannerId} as UpdateBanner;
-            const response = await updateBannerApi(bannerId, payload);
-            if (response.data && response.data.status === 1) {
-                Alert.alert('Success', 'Banner updated successfully!', [
-                    {text: 'OK', onPress: () => navigation.goBack()},
-                ]);
-            } else {
-                throw new Error(response.data.message || 'Failed to update banner.');
-            }
+            const response = await bannerService.updateBanner(bannerId, payload);
+            Alert.alert('Success', 'Banner updated successfully!', [
+                {text: 'OK', onPress: () => navigation.goBack()},
+            ]);
         } catch (err: any) {
             setError(parseApiError(err));
         } finally {

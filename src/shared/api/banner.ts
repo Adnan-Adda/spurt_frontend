@@ -1,33 +1,127 @@
-/*
- * =================================================================
- * == FILE: src/admin/api/banner.ts
- * =================================================================
- *
- * This file contains API functions for managing banners.
- * API Endpoint IDs: BNR-005, BNR-001
+import apiClient from '../../shared/api/apiClient';
+import {
+    Banner,
+    NewBanner,
+    UpdateBanner,
+    ApiResponse,
+    PaginatedResponse,
+} from '@/shared/types';
+
+/**
+ * A class to handle all API requests related to Banners.
  */
-import apiClient from './apiClient';
-import {NewBanner, UpdateBanner} from '@/shared/types';
+class BannerService {
+    /**
+     * Fetches a paginated list of banners.
+     * @param params - Parameters for pagination (limit, offset).
+     * @returns A promise that resolves to a paginated response of banners.
+     */
+    getBanners(params: { limit: number; offset: number }): Promise<PaginatedResponse<Banner>> {
+        return apiClient
+            .get<PaginatedResponse<Banner>>('/banner', { params })
+            .then(res => {
+                const response = res.data;
+                if (response.status !== 1) { // Assuming 1 is success
+                    throw new Error(response.message || 'Failed to fetch banners.');
+                }
+                return {
+                    status: response.status,
+                    message: response.message,
+                    data: response.data,
+                };
+            });
+    }
 
-export const getBannerListApi = (limit: number, offset: number) => {
-    const params = {limit, offset};
-    return apiClient.get('/banner', {params});
-};
+    /**
+     * Fetches the details for a single banner.
+     * @param bannerId - The ID of the banner to fetch.
+     * @returns A promise that resolves to the API response containing the banner details.
+     */
+    getBanner(bannerId: number): Promise<ApiResponse<Banner>> {
+        return apiClient
+            .get<ApiResponse<Banner>>('/banner/banner-detail', { params: { bannerId } })
+            .then(res => {
+                const response = res.data;
+                if (response.status !== 1) {
+                    throw new Error(response.message || 'Failed to fetch banner details.');
+                }
+                return {
+                    status: response.status,
+                    message: response.message,
+                    data: response.data,
+                };
+            });
+    }
 
-export const createBannerApi = (bannerData: NewBanner) => {
-    return apiClient.post('/banner', bannerData);
-};
+    /**
+     * Creates a new banner.
+     * @param bannerData - The data for the new banner.
+     * @returns A promise that resolves to the API response containing the new banner.
+     */
+    createBanner(bannerData: NewBanner): Promise<ApiResponse<Banner>> {
+        return apiClient
+            .post<ApiResponse<Banner>>('/banner', bannerData)
+            .then(res => {
+                const response = res.data;
+                if (response.status !== 1) {
+                    throw new Error(response.message || 'Failed to create banner.');
+                }
+                return {
+                    status: response.status,
+                    message: response.message,
+                    data: response.data,
+                };
+            });
+    }
 
-export const deleteBannerApi = (bannerId: number) => {
-    return apiClient.delete(`/banner/${bannerId}`);
-};
+    /**
+     * Updates an existing banner.
+     * @param bannerId - The ID of the banner to update.
+     * @param bannerData - The data to update.
+     * @returns A promise that resolves to the API response containing the updated banner.
+     */
+    updateBanner(
+        bannerId: number,
+        bannerData: UpdateBanner
+    ): Promise<ApiResponse<Banner>> {
+        return apiClient
+            .put<ApiResponse<Banner>>(`/banner/${bannerId}`, bannerData)
+            .then(res => {
+                const response = res.data;
+                if (response.status !== 1) {
+                    throw new Error(response.message || 'Failed to update banner.');
+                }
+                return {
+                    status: response.status,
+                    message: response.message,
+                    data: response.data,
+                };
+            });
+    }
 
-// Function to get a single banner's details
-export const getBannerDetailApi = (bannerId: number) => {
-    return apiClient.get('/banner/banner-detail', { params: { bannerId } });
-};
+    /**
+     * Deletes a banner by its ID.
+     * @param bannerId - The ID of the banner to delete.
+     * @returns A promise that resolves to the API response.
+     */
+    deleteBanner(bannerId: number): Promise<ApiResponse<null>> {
+        return apiClient
+            .delete<ApiResponse<null>>(`/banner/${bannerId}`)
+            .then(res => {
+                const response = res.data;
+                if (response.status !== 1) {
+                    throw new Error(response.message || 'Failed to delete banner.');
+                }
+                return {
+                    status: response.status,
+                    message: response.message,
+                    data: response.data, // data will likely be null on success
+                };
+            });
+    }
+}
 
-// Function to update a banner
-export const updateBannerApi = (bannerId: number, bannerData: UpdateBanner) => {
-    return apiClient.put(`/banner/${bannerId}`, bannerData);
-};
+/**
+ * Export a singleton instance of the BannerService.
+ */
+export const bannerService = new BannerService();
