@@ -4,24 +4,35 @@ import {
     NewBanner,
     UpdateBanner,
     ApiResponse,
-    PaginatedResponse,
 } from '@/shared/types';
 
-/**
- * A class to handle all API requests related to Banners.
- */
+type BannerListParams = {
+    limit: number;
+    offset: number;
+    keyword?: string;
+    count?: boolean;
+    status?: number;
+};
+
 class BannerService {
     /**
      * Fetches a paginated list of banners.
      * @param params - Parameters for pagination (limit, offset).
      * @returns A promise that resolves to a paginated response of banners.
      */
-    getBanners(params: { limit: number; offset: number }): Promise<PaginatedResponse<Banner>> {
+    getBanners(params: BannerListParams): Promise<ApiResponse<any>> {
+        const params1 = {
+            limit: params.limit,
+            offset: params.offset,
+            keyword: params.keyword || '',
+            count: params.count || false,
+            status: params.status || 1
+        }
         return apiClient
-            .get<PaginatedResponse<Banner>>('/banner', { params })
+            .get<ApiResponse<any>>('/banner', { params: params1 })
             .then(res => {
                 const response = res.data;
-                if (response.status !== 1) { // Assuming 1 is success
+                if (response.status !== 1) {
                     throw new Error(response.message || 'Failed to fetch banners.');
                 }
                 return {
