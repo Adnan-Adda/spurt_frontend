@@ -1,15 +1,8 @@
-/*
- * =================================================================
- * == FILE: src/screens/admin/ProductListScreen.tsx
- * =================================================================
- *
- * This screen fetches and displays a list of all products.
- */
 import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {productService, getProductListApi} from '../../../shared/api/product';
+import {productService} from '../../../shared/api/product';
 import {Product} from '@/shared/types';
 import ProductListItem from '../../components/productManagement/ProductListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';
@@ -20,6 +13,7 @@ import ConfirmationModal from '../../../shared/components/common/ConfirmationMod
 import {parseApiError} from '@/shared/utils/errorHandler';
 import Breadcrumb from "@/admin/components/common/Breadcrumb";
 import ListHeader from "@/admin/components/common/ListHeader";
+import Pagination from "@/shared/components/common/Pagination";
 
 type AdminStackParamList = {
     ProductList: undefined;
@@ -35,30 +29,37 @@ const ProductListScreen = () => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [productToDelete, setProductToDelete] = useState<Product | null>(null);
     const navigation = useNavigation<ProductListNavigationProp>();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalProducts, setTotalProducts] = useState(0);
+    const itemsPerPage = 10;
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async (page: number) => {
         setLoading(true);
         setError(null);
+        const offset = (page - 1) * itemsPerPage;
         try {
-            const response = await getProductListApi(50, 0);
-            if (response.data && response.data.status === 1) {
-                setProducts(response.data.data);
-            } else {
-                throw new Error(response.data.message || 'Failed to fetch products');
-            }
-
+            const response = await productService.getProducts({limit: itemsPerPage, offset: offset});
+            const response_count = await productService.getProducts({limit: 0, offset: 0, count: true})
+            setProducts(response.data);
+            setTotalProducts(response_count.data);
         } catch (err: any) {
             setError(parseApiError(err));
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useFocusEffect(
         useCallback(() => {
-            fetchProducts();
-        }, [])
+            fetchProducts(currentPage);
+        }, [currentPage, fetchProducts])
     );
+
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage);
+        // Optional: Scroll to top of the list when changing pages
+        // flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
+    };
 
     const handleDeletePress = (product: Product) => {
         setProductToDelete(product);
@@ -76,7 +77,7 @@ const ProductListScreen = () => {
     const deleteProduct = async (productId: number) => {
         try {
             const response = await productService.deleteProduct(productId);
-            fetchProducts();
+            fetchProducts(currentPage);
         } catch (err: any) {
             setError(parseApiError(err));
         }
@@ -98,7 +99,7 @@ const ProductListScreen = () => {
         <SafeAreaView style={styles.container}>
             <Breadcrumb path={['Products', 'Manage Products']}/>
             <ListHeader
-                itemCount={products.length}
+                itemCount={totalProducts}
                 itemType="Products"
                 createButton={
                     <AppButton title="Create Product" onPress={() => navigation.navigate('CreateProduct')}/>
@@ -114,6 +115,13 @@ const ProductListScreen = () => {
                         onDelete={() => handleDeletePress(item)}
                     />
                 )}
+                ListFooterComponent={
+                    <Pagination
+                        currentPage={currentPage}
+                        totalItems={totalProducts}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={handlePageChange}
+                    />}
                 ListEmptyComponent={
                     <View style={styles.centerContainer}>
                         <Text>No products found.</Text>
