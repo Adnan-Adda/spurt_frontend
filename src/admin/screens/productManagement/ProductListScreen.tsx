@@ -30,7 +30,7 @@ const ProductListScreen = () => {
     const [productToDelete, setProductToDelete] = useState<Product | null>(null);
     const navigation = useNavigation<ProductListNavigationProp>();
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalProducts, setTotalProducts] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
     const itemsPerPage = 10;
 
     const fetchProducts = useCallback(async (page: number) => {
@@ -41,7 +41,7 @@ const ProductListScreen = () => {
             const response = await productService.getProducts({limit: itemsPerPage, offset: offset});
             const response_count = await productService.getProducts({limit: 0, offset: 0, count: true})
             setProducts(response.data);
-            setTotalProducts(response_count.data);
+            setTotalItems(response_count.data);
         } catch (err: any) {
             setError(parseApiError(err));
         } finally {
@@ -57,8 +57,6 @@ const ProductListScreen = () => {
 
     const handlePageChange = (newPage: number) => {
         setCurrentPage(newPage);
-        // Optional: Scroll to top of the list when changing pages
-        // flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
     };
 
     const handleDeletePress = (product: Product) => {
@@ -99,7 +97,7 @@ const ProductListScreen = () => {
         <SafeAreaView style={styles.container}>
             <Breadcrumb path={['Products', 'Manage Products']}/>
             <ListHeader
-                itemCount={totalProducts}
+                itemCount={totalItems}
                 itemType="Products"
                 createButton={
                     <AppButton title="Create Product" onPress={() => navigation.navigate('CreateProduct')}/>
@@ -118,7 +116,7 @@ const ProductListScreen = () => {
                 ListFooterComponent={
                     <Pagination
                         currentPage={currentPage}
-                        totalItems={totalProducts}
+                        totalItems={totalItems}
                         itemsPerPage={itemsPerPage}
                         onPageChange={handlePageChange}
                     />}
