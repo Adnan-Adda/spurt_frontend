@@ -1,13 +1,3 @@
-/*
- * =================================================================
- * == FILE: src/api/product.ts
- * =================================================================
- *
- * This file contains API functions for fetching product data.
- * We'll start with the product list.
- * API Endpoint ID: PROD-025
- */
-
 import apiClient from './apiClient';
 import {
     Product,
@@ -16,21 +6,46 @@ import {
     ApiResponse,
 } from '@/shared/types';
 
-// The API supports pagination, so we can pass limit and offset
-export const getProductListApi = (limit: number, offset: number, keyword: string = '', count = false) => {
-    const params = {
-        limit,
-        offset,
-        keyword,
-    };
-    return apiClient.get('/product/', {params});
+type ProductListParams = {
+    limit: number;
+    offset: number;
+    keyword?: string;
+    count?: boolean;
+    price?: number;
 };
-
 
 /**
  * A class to handle all API requests related to Products.
  */
 class ProductService {
+
+    /**
+     * Fetches a paginated list of products.
+     * Corresponds to API endpoint: PROD-025
+     * @param params - Parameters for pagination and searching.
+     * @returns A promise that resolves to a paginated response of products.
+     */
+    getProducts(params: ProductListParams): Promise<ApiResponse<any>> {
+        const params1 = {
+            limit: params.limit,
+            offset: params.offset,
+            keyword: params.keyword || '',
+            count: params.count || false,
+            price: params.price || 0
+        }
+        return apiClient.get<ApiResponse<any>>('/product/', {params: params1}).then(res => {
+            const response = res.data;
+            if (response.status !== 1) {
+                throw new Error(response.message || 'Failed to fetch products.');
+            }
+            return {
+                status: response.status,
+                message: response.message,
+                data: response.data,
+            };
+        });
+    }
+
     /**
      * Fetches the details for a single product.
      * @param productId - The ID of the product to fetch.
