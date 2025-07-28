@@ -44,7 +44,6 @@ const Pagination: React.FC<PaginationProps> = ({
                 <MaterialIcons name="chevron-left" size={24}
                                color={currentPage === 1 ? colors.darkGray : colors.primary}/>
                 <Text style={[styles.buttonText, currentPage === 1 && styles.disabledText]}>
-                    Previous
                 </Text>
             </TouchableOpacity>
 
@@ -58,7 +57,6 @@ const Pagination: React.FC<PaginationProps> = ({
                 disabled={currentPage === totalPages}
             >
                 <Text style={[styles.buttonText, currentPage === totalPages && styles.disabledText]}>
-                    Next
                 </Text>
                 <MaterialIcons name="chevron-right" size={24}
                                color={currentPage === totalPages ? colors.darkGray : colors.primary}/>
