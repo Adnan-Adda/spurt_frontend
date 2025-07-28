@@ -17,6 +17,8 @@ import Breadcrumb from '../../components/common/Breadcrumb';
 import ListHeader from '../../components/common/ListHeader';
 import {parseApiError} from '@/shared/utils/errorHandler';
 import ConfirmationModal from "@/shared/components/common/ConfirmationModal";
+import Pagination from "@/shared/components/common/Pagination";
+
 
 type CMSStackParamList = {
     BannerList: undefined;
@@ -32,24 +34,35 @@ const BannerListScreen = () => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [bannerToDelete, setBannerToDelete] = useState<Banner | null>(null);
     const navigation = useNavigation<BannerListNavigationProp>();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const itemsPerPage = 10;
 
-    const fetchBanners = async () => {
+    const fetchBanners = useCallback(async (page: number) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await bannerService.getBanners({limit: 50, offset: 0});
+            const offset = (page - 1) * itemsPerPage;
+            const response = await bannerService.getBanners({limit: itemsPerPage, offset: offset});
+            const response_count = await bannerService.getBanners({limit: 0, offset: 0, count: true})
+            setBanners(response.data);
+            setTotalItems(response_count.data);
         } catch (err: any) {
             setError(parseApiError(err));
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useFocusEffect(
         useCallback(() => {
-            fetchBanners();
-        }, [])
+            fetchBanners(currentPage);
+        }, [currentPage, fetchBanners])
     );
+
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage);
+    };
 
     const handleDeletePress = (banner: Banner) => {
         setBannerToDelete(banner);
@@ -67,7 +80,7 @@ const BannerListScreen = () => {
     const deleteBanner = async (bannerId: number) => {
         try {
             const response = await bannerService.deleteBanner(bannerId);
-            fetchBanners();
+            fetchBanners(currentPage);
         } catch (err: any) {
             setError(parseApiError(err));
         }
@@ -101,10 +114,17 @@ const BannerListScreen = () => {
                 renderItem={({item}) => (
                     <BannerListItem
                         banner={item}
-                        onPress={() => navigation.navigate('EditBanner', { bannerId: item.bannerId })}
+                        onPress={() => navigation.navigate('EditBanner', {bannerId: item.bannerId})}
                         onDelete={() => handleDeletePress(item)}
                     />
                 )}
+                ListFooterComponent={
+                    <Pagination
+                        currentPage={currentPage}
+                        totalItems={totalItems}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={handlePageChange}
+                    />}
                 ListEmptyComponent={
                     <View style={styles.centerContainer}>
                         <Text>No banners found.</Text>
