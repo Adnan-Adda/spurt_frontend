@@ -1,38 +1,83 @@
-/*
- * =================================================================
- * == FILE: src/api/user.ts
- * =================================================================
- *
- * This file contains API functions for creating a new user.
- * API Endpoint ID: AUTH-002
- */
-import apiClient from './apiClient';
-import {NewUser, UpdateUser} from '@/shared/types';
+import apiClient from '../../shared/api/apiClient';
+import {User, NewUser, UpdateUser, ApiResponse} from '@/shared/types';
 
-export const createUserApi = (userData: NewUser) => {
-    return apiClient.post('/auth/create-user', userData);
+type UserListParams = {
+    limit: number;
+    offset: number;
+    keyword?: string;
+    count?: boolean;
 };
 
+class UserService {
+    getUsers(params: UserListParams): Promise<ApiResponse<any>> {
+        return apiClient.get<ApiResponse<any>>('/auth/userlist', {params}).then(res => {
+            const response = res.data;
+            if (response.status !== 1) {
+                throw new Error(response.message || 'Failed to fetch users.');
+            }
+            return {
+                status: response.status,
+                message: response.message,
+                data: response.data,
+            };
+        });
+    }
 
-export const getUserListApi = (limit: number, offset: number, keyword: string = '', count = false) => {
-    const params = {
-        limit,
-        offset,
-        keyword,
-    };
-    return apiClient.get('/auth/userlist', {params});
-};
+    getUserProfile(): Promise<ApiResponse<User>> {
+        return apiClient.get<ApiResponse<User>>(`/auth/get-profile`).then(res => {
+            const response = res.data;
+            if (response.status !== 1) {
+                throw new Error(response.message || 'Failed to fetch user profile.');
+            }
+            return {
+                status: response.status,
+                message: response.message,
+                data: response.data,
+            };
+        });
+    }
 
-// Function to get a single user's details
-export const getUserProfileApi = () => {
-    return apiClient.get(`/auth/get-profile`);
-};
+    createUser(userData: NewUser): Promise<ApiResponse<User>> {
+        return apiClient.post<ApiResponse<User>>('/auth/create-user', userData).then(res => {
+            const response = res.data;
+            if (response.status !== 1) {
+                throw new Error(response.message || 'Failed to create user.');
+            }
+            return {
+                status: response.status,
+                message: response.message,
+                data: response.data,
+            };
+        });
+    }
 
-// Function to update a user
-export const updateUserApi = (userId: number, userData: UpdateUser) => {
-    return apiClient.put(`/auth/update-user/${userId}`, userData);
-};
+    updateUser(userId: number, userData: UpdateUser): Promise<ApiResponse<User>> {
+        return apiClient.put<ApiResponse<User>>(`/auth/update-user/${userId}`, userData).then(res => {
+            const response = res.data;
+            if (response.status !== 1) {
+                throw new Error(response.message || 'Failed to update user.');
+            }
+            return {
+                status: response.status,
+                message: response.message,
+                data: response.data,
+            };
+        });
+    }
 
-export const deleteUserApi = (userId: number) => {
-    return apiClient.delete(`/auth/delete-user/${userId}`);
-};
+    deleteUser(userId: number): Promise<ApiResponse<null>> {
+        return apiClient.delete<ApiResponse<null>>(`/auth/delete-user/${userId}`).then(res => {
+            const response = res.data;
+            if (response.status !== 1) {
+                throw new Error(response.message || 'Failed to delete user.');
+            }
+            return {
+                status: response.status,
+                message: response.message,
+                data: response.data,
+            };
+        });
+    }
+}
+
+export const userService = new UserService();

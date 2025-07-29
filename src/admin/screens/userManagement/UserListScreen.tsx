@@ -1,15 +1,8 @@
-/*
- * =================================================================
- * == FILE: src/screens/admin/UserListScreen.tsx
- * =================================================================
- *
- * This screen fetches and displays a list of all users.
- */
 import React, {useState, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet, View, Text, Alert} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {getUserListApi, deleteUserApi} from '../../../shared/api/user';
+import {userService} from '../../../shared/api/user';
 import {User} from '@/shared/types';
 import UserListItem from '../../components/userManagement/UserListItem';
 import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';
@@ -19,6 +12,7 @@ import ConfirmationModal from '../../../shared/components/common/ConfirmationMod
 import AppButton from "@/shared/components/common/AppButton";
 import Breadcrumb from "@/admin/components/common/Breadcrumb";
 import ListHeader from "@/admin/components/common/ListHeader";
+import Pagination from "@/shared/components/common/Pagination";
 
 type AdminStackParamList = {
     UserList: undefined;
@@ -32,30 +26,32 @@ const UserListScreen = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigation = useNavigation<UserListScreenNavigationProp>();
-    // State for the custom modal
     const [isModalVisible, setModalVisible] = useState(false);
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
-    const fetchUsers = async () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const itemsPerPage = 10;
+
+    const fetchUsers = useCallback(async (page: number) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await getUserListApi(50, 0);
-            if (response.data && response.data.status === 1) {
-                setUsers(response.data.data);
-            } else {
-                throw new Error(response.data.message || 'Failed to fetch users');
-            }
+            const offset = (page - 1) * itemsPerPage;
+            const response = await userService.getUsers({limit: itemsPerPage, offset: offset});
+            const response_count = await userService.getUsers({limit: 0, offset: 0, count: true})
+            setUsers(response.data);
+            setTotalItems(response_count.data);
         } catch (err: any) {
             setError(err.message || 'An unknown error occurred');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useFocusEffect(
         useCallback(() => {
-            fetchUsers();
-        }, [])
+            fetchUsers(currentPage);
+        }, [currentPage, fetchUsers])
     );
 
     const handleUserPress = (user: User) => { // <-- Receive the full user object
@@ -82,16 +78,15 @@ const UserListScreen = () => {
         setUserToDelete(null);
     };
 
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage);
+    };
+
     const deleteUser = async (userId: number) => {
         try {
-            const response = await deleteUserApi(userId);
-            if (response.data && response.data.status === 1) {
-                // Using Alert here for a simple success message is fine
-                Alert.alert('Success', 'User deleted successfully.');
-                fetchUsers();
-            } else {
-                throw new Error(response.data.message || 'Failed to delete user.');
-            }
+            const response = await userService.deleteUser(userId);
+            Alert.alert('Success', 'User deleted successfully.');
+            fetchUsers(currentPage);
         } catch (err: any) {
             Alert.alert('Error', err.message || 'An unknown error occurred.');
         }
@@ -127,14 +122,19 @@ const UserListScreen = () => {
                         onPress={() => handleUserPress(item)}
                         onDelete={() => handleDeletePress(item)}/>
                 )}
+                ListFooterComponent={
+                    <Pagination
+                        currentPage={currentPage}
+                        totalItems={totalItems}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={handlePageChange}
+                    />}
                 ListEmptyComponent={
                     <View style={styles.centerContainer}>
                         <Text>No users found.</Text>
                     </View>
                 }
             />
-            {/* Render the modal */
-            }
             {
                 userToDelete && (
                     <ConfirmationModal
