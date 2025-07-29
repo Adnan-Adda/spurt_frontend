@@ -11,7 +11,7 @@ export interface User {
     email: string;
     username: string;
     // ToDo remove password from user list when fetching it
-    userGroup: { // <-- ADDED
+    usergroup: { // <-- ADDED
         name: string;
         groupId: number;
         createdBy: string;
