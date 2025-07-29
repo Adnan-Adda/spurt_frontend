@@ -1,80 +1,45 @@
-import React, {useState, useEffect} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
+import React, {useState} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Alert, View, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {getRolesApi} from '../../../shared/api/role';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {userService} from '../../../shared/api/user';
-import {Role, NewUser} from '@/shared/types';
+import {NewUser} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
-import AppButton from '../../../shared/components/common/AppButton';
-import ErrorText from '../../../shared/components/common/ErrorText';
+import {parseApiError} from '@/shared/utils/errorHandler';
 import UserDetailForm from '../../components/userManagement/UserDetailForm';
+import ErrorText from '../../../shared/components/common/ErrorText';
+
 
 const CreateUserScreen = () => {
-    const [roles, setRoles] = useState<Role[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [form, setForm] = useState<NewUser>({
-        firstName: '',
-        lastName: '',
-        username: '',
-        email: '',
-        password: '',
-        userGroupId: 0,
-    });
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<any>>();
+    const [error, setError] = useState<string | undefined>(undefined);
 
-    useEffect(() => {
-        const fetchRoles = async () => {
-            try {
-                const response = await getRolesApi();
-                if (response.data && response.data.status === 1) {
-                    setRoles(response.data.data);
-                    if (response.data.data.length > 0) {
-                        setForm(prev => ({...prev, userGroupId: response.data.data[0].groupId}));
-                    }
-                }
-            } catch (e) {
-                setError('Failed to load user roles.');
-            }
-        };
-        fetchRoles();
-    }, []);
-
-    const handleInputChange = (name: keyof NewUser, value: string | number) => {
-        setForm(prev => ({...prev, [name]: value}));
-    };
-
-    const handleCreateUser = async () => {
-        if (!form.firstName || !form.lastName || !form.email || !form.password || !form.userGroupId) {
-            setError('Please fill out all fields.');
-            return;
-        }
-        setLoading(true);
-        setError(null);
+    const handleCreateUser = async (values: any) => {
+        setError(undefined);
         try {
-            const payload = {...form, username: form.email};
-            const response = await userService.createUser(payload);
+            await userService.createUser(values);
             Alert.alert('Success', 'User created successfully!', [
                 {text: 'OK', onPress: () => navigation.goBack()}
             ]);
+
         } catch (err: any) {
-            setError(err.message || 'An unknown error occurred.');
-        } finally {
-            setLoading(false);
+            setError(parseApiError(err));
+            Alert.alert('Creation Failed');
         }
     };
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ScrollView style={styles.container}>
-                <UserDetailForm
-                    form={form}
-                    roles={roles}
-                    onInputChange={handleInputChange}
-                    isEditing={false}
-                />
-                {error && <ErrorText message={error}/>}
-                <AppButton title="Create User" onPress={handleCreateUser} loading={loading}/>
+            <ScrollView>
+                <View style={styles.container}>
+                    <Text style={styles.header}>Create New User</Text>
+                    <UserDetailForm
+                        initialValues={{}}
+                        onSubmit={handleCreateUser}
+                        isEditing={false}
+                    />
+                    {error && <ErrorText message={error}/>}
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -86,10 +51,14 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
     },
     container: {
-        flex: 1,
         padding: 20,
+    },
+    header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: colors.primary,
     },
 });
 
 export default CreateUserScreen;
-
