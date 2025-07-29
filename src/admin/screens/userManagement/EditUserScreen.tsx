@@ -1,110 +1,54 @@
-import React, {useState, useEffect} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
+import React, {useState} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Alert, View, Text} from 'react-native';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import {getRolesApi} from '../../../shared/api/role';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {userService} from '../../../shared/api/user';
-import {Role, UpdateUser, User} from '@/shared/types';
+import {UpdateUser, User} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
-import AppButton from '../../../shared/components/common/AppButton';
-import ErrorText from '../../../shared/components/common/ErrorText';
+import {parseApiError} from '@/shared/utils/errorHandler';
 import UserDetailForm from '../../components/userManagement/UserDetailForm';
-import LoadingSpinner from '../../../shared/components/common/LoadingSpinner';
+import ErrorText from '../../../shared/components/common/ErrorText';
 
 type ParamList = {
     EditUser: {
-        user: User; // <-- Receive the full User object
+        user: User;
     };
 };
 
 const EditUserScreen = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<any>>();
     const route = useRoute<RouteProp<ParamList, 'EditUser'>>();
-    const {user} = route.params; // <-- Get the user object from route params
+    const {user} = route.params;
 
-    const [roles, setRoles] = useState<Role[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [pageLoading, setPageLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [form, setForm] = useState<Partial<UpdateUser>>({});
-
-    useEffect(() => {
-        const loadInitialData = async () => {
-            try {
-                // We still need to fetch the list of available roles
-                const rolesResponse = await getRolesApi();
-                if (rolesResponse.data && rolesResponse.data.status === 1) {
-                    setRoles(rolesResponse.data.data);
-                } else {
-                    throw new Error('Failed to load roles');
-                }
-
-                // Pre-fill the form with the user data passed via navigation
-                setForm({
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    username: user.username,
-                    userGroupId: user.userGroup.groupId,
-                });
-
-            } catch (e: any) {
-                setError(e.message || 'Failed to load page data.');
-            } finally {
-                setPageLoading(false);
-            }
-        };
-        loadInitialData();
-    }, [user]);
-
-    const handleInputChange = (name: keyof UpdateUser, value: string | number) => {
-        setForm(prev => ({...prev, [name]: value}));
-    };
-
-    const handleUpdateUser = async () => {
-        if (!form.firstName || !form.lastName || !form.email || !form.userGroupId) {
-            setError('Please fill out all required fields.');
-            return;
-        }
-        setLoading(true);
+    const handleUpdateUser = async (values: any) => {
         setError(null);
         try {
-            const payload: UpdateUser = {
-                firstName: form.firstName,
-                lastName: form.lastName,
-                email: form.email,
-                username: form.email,
-                userGroupId: form.userGroupId,
-            };
-            if (form.password && form.password.trim().length > 0) {
-                payload.password = form.password;
-            }
-
-            const response = await userService.updateUser(user.userId, payload);
+            const payload: UpdateUser = values;
+            await userService.updateUser(user.userId, payload);
             Alert.alert('Success', 'User updated successfully!', [
                 {text: 'OK', onPress: () => navigation.goBack()}
             ]);
+
         } catch (err: any) {
-            setError(err.message || 'An unknown error occurred.');
-        } finally {
-            setLoading(false);
+            const errorMessage = parseApiError(err);
+            setError(errorMessage);
+            Alert.alert('Update Failed', errorMessage);
         }
     };
 
-    if (pageLoading) {
-        return <LoadingSpinner/>;
-    }
-
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ScrollView style={styles.container}>
-                <UserDetailForm
-                    form={form}
-                    roles={roles}
-                    onInputChange={handleInputChange}
-                    isEditing={true}
-                />
-                {error && <ErrorText message={error}/>}
-                <AppButton title="Update User" onPress={handleUpdateUser} loading={loading}/>
+            <ScrollView>
+                <View style={styles.container}>
+                    <Text style={styles.header}>Edit User</Text>
+                    <UserDetailForm
+                        initialValues={user}
+                        onSubmit={handleUpdateUser}
+                        isEditing={true}
+                    />
+                    {error && <ErrorText message={error}/>}
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -116,8 +60,13 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
     },
     container: {
-        flex: 1,
         padding: 20,
+    },
+    header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: colors.primary,
     },
 });
 
