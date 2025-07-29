@@ -1,23 +1,21 @@
-/*
- * =================================================================
- * == FILE: src/api/category.ts
- * =================================================================
- *
- * This file contains API functions for fetching category data.
- * API Endpoint ID: CAT-007
- */
 import apiClient from './apiClient';
 import {
     Category,
     NewCategory,
     UpdateCategory,
-    PaginatedResponse,
     ApiResponse,
 } from '@/shared/types';
 
-/**
- * A class to handle all API requests related to Categories.
- */
+type CategoryListParams = {
+    limit: number;
+    offset: number;
+    keyword?: string;
+    count?: boolean;
+    name?: string;
+    sortOrder?: number;
+    status?: number;
+};
+
 class CategoryService {
     /**
      * Fetches a paginated list of categories.
@@ -25,20 +23,14 @@ class CategoryService {
      * @param params - Parameters for pagination, searching, and sorting.
      * @returns A promise that resolves to a paginated response of categories.
      */
-    getCategories(params: {
-        limit: number;
-        offset: number;
-        keyword?: string;
-        sortOrder?: number;
-    }): Promise<PaginatedResponse<Category>> {
+    getCategories(params: CategoryListParams): Promise<ApiResponse<any>> {
         return apiClient
-            .get<PaginatedResponse<Category>>('/category', {params})
+            .get<ApiResponse<any>>('/category', {params})
             .then(res => {
                 const response = res.data;
-                if (response.status !== 1) { // Assuming '1' is the success status code
+                if (response.status !== 1) {
                     throw new Error(response.message || 'Failed to fetch categories.');
                 }
-                // Return the full response object, including status and message
                 return {
                     status: response.status,
                     message: response.message,
@@ -60,7 +52,6 @@ class CategoryService {
                 if (response.status !== 1) {
                     throw new Error(response.message || 'Failed to create category.');
                 }
-                // Return the full response object, including status and message
                 return {
                     status: response.status,
                     message: response.message,
@@ -86,7 +77,6 @@ class CategoryService {
                 if (response.status !== 1) {
                     throw new Error(response.message || 'Failed to update category.');
                 }
-                // Return the full response object, including status and message
                 return {
                     status: response.status,
                     message: response.message,
@@ -112,11 +102,10 @@ class CategoryService {
                 if (response.status !== 1) {
                     throw new Error(response.message || 'Failed to delete category.');
                 }
-                // Return the full response object, including status and message
                 return {
                     status: response.status,
                     message: response.message,
-                    data: response.data, // data will likely be null on success
+                    data: response.data,
                 };
             });
     }
