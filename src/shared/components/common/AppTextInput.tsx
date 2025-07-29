@@ -4,7 +4,15 @@
 * =================================================================
 */
 import React from 'react';
-import {TextInput, StyleSheet, View, Text, KeyboardTypeOptions} from 'react-native';
+import {
+    TextInput,
+    StyleSheet,
+    View,
+    Text,
+    KeyboardTypeOptions,
+    NativeSyntheticEvent,
+    TextInputFocusEventData
+} from 'react-native';
 import {colors} from '../../styles/colors';
 
 interface AppTextInputProps {
@@ -17,6 +25,9 @@ interface AppTextInputProps {
     keyboardType?: KeyboardTypeOptions;
     multiline?: boolean;
     numberOfLines?: number;
+    onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+    touched?: boolean;
+    autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
 }
 
 const AppTextInput: React.FC<AppTextInputProps> = ({
@@ -29,23 +40,28 @@ const AppTextInput: React.FC<AppTextInputProps> = ({
                                                        keyboardType = 'default',
                                                        multiline = false,
                                                        numberOfLines = 1,
+                                                       onBlur,
+                                                       touched,
+                                                       autoCapitalize = 'none',
                                                    }) => {
+    const showError = touched && error;
     return (
         <View style={textInputStyles.container}>
             <Text style={textInputStyles.label}>{label}</Text>
             <TextInput
-                style={[textInputStyles.input, error ? textInputStyles.inputError : null]}
+                style={[textInputStyles.input, showError ? textInputStyles.inputError : null]}
                 value={value}
                 onChangeText={onChangeText}
                 placeholder={placeholder}
                 placeholderTextColor={colors.placeholder}
                 secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
+                autoCapitalize={autoCapitalize}
                 multiline={multiline}
                 numberOfLines={multiline ? numberOfLines : 1}
                 keyboardType={keyboardType}
+                onBlur={onBlur}
             />
-            {error && <Text style={textInputStyles.errorText}>{error}</Text>}
+            {showError && <Text style={textInputStyles.errorText}>{error}</Text>}
         </View>
     );
 };
