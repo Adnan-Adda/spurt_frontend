@@ -1,5 +1,5 @@
 import apiClient from '../../shared/api/apiClient';
-import {User, NewUser, UpdateUser, ApiResponse} from '@/shared/types';
+import {User, NewUser, UpdateUser, ApiResponse, LoginCredentials} from '@/shared/types';
 
 type UserListParams = {
     limit: number;
@@ -78,6 +78,35 @@ class UserService {
             };
         });
     }
+
+    login(credentials: LoginCredentials): Promise<ApiResponse<any>> {
+        return apiClient.post<ApiResponse<any>>('/auth/login', credentials).then(res => {
+            const response = res.data;
+            if (response.status !== 1) {
+                throw new Error(response.message || 'Login failed.');
+            }
+            return {
+                status: response.status,
+                message: response.message,
+                data: response.data,
+            };
+        });
+    }
+
+    logout(): Promise<ApiResponse<any>> {
+        return apiClient.post<ApiResponse<any>>('/auth/logout', {}).then(res => {
+            const response = res.data;
+            if (response.status !== 1) {
+                throw new Error(response.message || 'Login failed.');
+            }
+            return {
+                status: response.status,
+                message: response.message,
+                data: response.data,
+            };
+        });
+    }
+
 }
 
 export const userService = new UserService();
