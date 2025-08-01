@@ -1,51 +1,61 @@
-/*
- * =================================================================
- * == FILE: src/state/AuthContext.tsx
- * =================================================================
- *
- * This file sets up the React Context for authentication.
- * It provides the `user`, `userToken`, `login`, and `logout`
- * functions to any component wrapped in the `AuthProvider`.
- */
-import React, {createContext, useState, useEffect} from 'react';
-import {loginApi} from '@/shared/api/auth';
-import {saveToken, getToken, removeToken, saveUser, getUser, removeUser} from '../utils/storage';
-import {LoginCredentials, User} from '@/shared/types';
+import React, {createContext, useState, useEffect, useContext} from 'react';
+import {userService} from '@/shared/api/user';
+import {sellerService} from '@/shared/api/seller';
+import {
+    saveToken, getToken, removeToken,
+    saveUser, getUser, removeUser,
+    saveUserType, getUserType, removeUserType
+} from '../utils/storage';
+import {LoginCredentials, User, Seller} from '@/shared/types';
+
+interface Session {
+    user: User | Seller | null;
+    token: string | null;
+    userType: 'admin' | 'seller' | null;
+}
 
 interface AuthContextType {
-    userToken: string | null;
-    user: User | null;
+    session: Session;
     isLoading: boolean;
     error: string | null;
-    login: (credentials: LoginCredentials) => void;
+    login: (credentials: LoginCredentials, userType: 'admin' | 'seller') => Promise<void>;
     logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({children}: { children: React.ReactNode }) => {
-    const [userToken, setUserToken] = useState<string | null>(null);
-    const [user, setUser] = useState<User | null>(null);
+    const [session, setSession] = useState<Session>({
+        user: null,
+        token: null,
+        userType: null,
+    });
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const login = async (credentials: LoginCredentials) => {
+    const login = async (credentials: LoginCredentials, userType: 'admin' | 'seller') => {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await loginApi(credentials);
-            if (response.data && response.data.status === 1) {
-                const {token, user} = response.data.data;
-                await saveToken(token);
-                await saveUser(user);
-                setUserToken(token);
-                setUser(user);
+            let response;
+            // Call the correct API based on userType
+            if (userType === 'admin') {
+                response = await userService.login(credentials);
+            } else if (userType === 'seller') {
+                const sellerCredentials = {emailId: credentials.username, password: credentials.password};
+                response = await sellerService.login(sellerCredentials);
             } else {
-                throw new Error(response.data.message || 'Login failed');
+                throw new Error('Invalid user type for login.');
             }
+            const {token, user} = response.data;
+            await saveToken(token);
+            await saveUser(user);
+            await saveUserType(userType);
+            setSession({user, token, userType});
         } catch (err: any) {
-            const errorMessage = err.response?.data?.message || err.message || 'An unknown error occurred.';
+            const errorMessage = err.message || 'An unknown error occurred.';
             setError(errorMessage);
+            throw new Error(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -53,20 +63,27 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
 
     const logout = async () => {
         setIsLoading(true);
+        if (session.userType === 'admin') {
+            await userService.logout();
+        } else if (session.userType === 'seller') {
+            await sellerService.logout();
+        }
         await removeToken();
         await removeUser();
-        setUserToken(null);
-        setUser(null);
+        await removeUserType();
+        setSession({user: null, token: null, userType: null});
         setIsLoading(false);
     };
 
     const checkAuthStatus = async () => {
         try {
+            // Retrieve all parts of the session from storage
             const token = await getToken();
             const storedUser = await getUser();
-            if (token && storedUser) {
-                setUserToken(token);
-                setUser(storedUser);
+            const userType = await getUserType();
+
+            if (token && storedUser && userType) {
+                setSession({token, user: storedUser, userType});
             }
         } catch (e) {
             console.error('Failed to check auth status:', e);
@@ -80,8 +97,12 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{user, userToken, isLoading, error, login, logout}}>
+        <AuthContext.Provider value={{session, isLoading, error, login, logout}}>
             {children}
         </AuthContext.Provider>
     );
+};
+
+export const useAuth = () => {
+    return useContext(AuthContext);
 };
