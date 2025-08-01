@@ -1,72 +1,70 @@
-/*
- * =================================================================
- * == FILE: src/components/auth/LoginForm.tsx
- * =================================================================
- *
- * The form used in the LoginScreen. It handles user input
- * for email and password and calls the onSubmit function.
- */
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import {useFormik} from 'formik';
+import * as Yup from 'yup';
+import {useAuth} from '../../../shared/state/AuthContext';
 import AppTextInput from '../../../shared/components/common/AppTextInput';
 import AppButton from '../../../shared/components/common/AppButton';
 import ErrorText from '../../../shared/components/common/ErrorText';
-import {LoginCredentials } from '@/shared/types';
+import {LoginCredentials} from '@/shared/types';
 
-interface LoginFormProps {
-    onSubmit: (credentials: LoginCredentials) => void;
-    loading: boolean;
-    error: string | null;
-}
+const LoginSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    password: Yup.string().required('Password is required'),
+});
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, error }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [formErrors, setFormErrors] = useState({ email: '', password: '' });
+const LoginForm: React.FC = () => {
+    const {login, isLoading, error} = useAuth();
 
-    const validateAndSubmit = () => {
-        let valid = true;
-        const newErrors = { email: '', password: '' };
-
-        if (!email) {
-            newErrors.email = 'Email is required.';
-            valid = false;
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            newErrors.email = 'Email address is invalid.';
-            valid = false;
-        }
-
-        if (!password) {
-            newErrors.password = 'Password is required.';
-            valid = false;
-        }
-
-        setFormErrors(newErrors);
-
-        if (valid) {
-            onSubmit({ username: email, password });
-        }
-    };
+    const formik = useFormik({
+        initialValues: {email: '', password: ''},
+        validationSchema: LoginSchema,
+        onSubmit: async (values) => {
+            const credentials: LoginCredentials = {
+                username: values.email, // The API expects 'username' for the email
+                password: values.password,
+            };
+            try {
+                // Call the login function and explicitly pass 'admin'
+                await login(credentials, 'admin');
+                // Navigation will be handled by the RootNavigator upon successful login
+            } catch (e) {
+                // The error is already set in the AuthContext, so we don't need to do anything here.
+                // Formik's `isSubmitting` will automatically be reset.
+            }
+        },
+    });
 
     return (
         <View style={loginFormStyles.container}>
             <AppTextInput
                 label="Email Address"
-                value={email}
-                onChangeText={setEmail}
-                placeholder="admin@spurtcommerce.com"
-                error={formErrors.email}
+                value={formik.values.email}
+                onChangeText={formik.handleChange('email')}
+                onBlur={formik.handleBlur('email')}
+                placeholder="admin@example.com"
+                error={formik.touched.email && formik.errors.email}
+                touched={formik.touched.email}
+                keyboardType="email-address"
+                autoCapitalize="none"
             />
             <AppTextInput
                 label="Password"
-                value={password}
-                onChangeText={setPassword}
+                value={formik.values.password}
+                onChangeText={formik.handleChange('password')}
+                onBlur={formik.handleBlur('password')}
                 placeholder="Enter your password"
                 secureTextEntry
-                error={formErrors.password}
+                error={formik.touched.password && formik.errors.password}
+                touched={formik.touched.password}
             />
-            <ErrorText message={error} />
-            <AppButton title="Login" onPress={validateAndSubmit} loading={loading} />
+            {/* Display the global login error from the context */}
+            {error && <ErrorText message={error}/>}
+            <AppButton
+                title="Login"
+                onPress={() => formik.handleSubmit()}
+                loading={formik.isSubmitting || isLoading}
+            />
         </View>
     );
 };
