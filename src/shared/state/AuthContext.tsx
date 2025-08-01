@@ -7,6 +7,7 @@ import {
     saveUserType, getUserType, removeUserType
 } from '../utils/storage';
 import {LoginCredentials, User, Seller} from '@/shared/types';
+import {parseApiError} from "@/shared/utils/errorHandler";
 
 interface Session {
     user: User | Seller | null;
@@ -54,7 +55,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
             setSession({user, token, userType});
         } catch (err: any) {
             const errorMessage = err.message || 'An unknown error occurred.';
-            setError(errorMessage);
+            setError(parseApiError(err));
             throw new Error(errorMessage);
         } finally {
             setIsLoading(false);
