@@ -1,18 +1,10 @@
-/*
-* =================================================================
-* == FILE: src/navigation/AuthStack.tsx
-* =================================================================
-*
-* This navigator handles all authentication-related screens.
-* For now, it only contains the Login screen.
-*/
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from '../screens/auth/LoginScreen';
 
 const Stack = createStackNavigator();
 
-const AuthStack = () => {
+const AdminAuthStack = () => {
     return (
         <Stack.Navigator
             screenOptions={{
@@ -24,4 +16,4 @@ const AuthStack = () => {
     );
 };
 
-export default AuthStack;
+export default AdminAuthStack;
