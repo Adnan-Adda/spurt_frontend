@@ -1,20 +1,9 @@
-/*
- * =================================================================
- * == FILE: src/screens/auth/LoginScreen.tsx
- * =================================================================
- *
- * This screen presents the login form to the user.
- * It uses the AuthContext to call the login function.
- */
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
 import LoginForm from '../../components/auth/LoginForm';
-import { AuthContext } from '@/shared/state/AuthContext';
 import { colors } from '@/shared/styles/colors';
 
 const LoginScreen = () => {
-    const { login, isLoading, error } = useContext(AuthContext);
-
     return (
         <SafeAreaView style={loginScreenStyles.safeArea}>
             <KeyboardAvoidingView
@@ -24,7 +13,7 @@ const LoginScreen = () => {
                 <View style={loginScreenStyles.innerContainer}>
                     <Text style={loginScreenStyles.title}>Welcome Back</Text>
                     <Text style={loginScreenStyles.subtitle}>Admin Panel Login</Text>
-                    <LoginForm onSubmit={login} loading={isLoading} error={error} />
+                    <LoginForm />
                 </View>
             </KeyboardAvoidingView>
         </SafeAreaView>
