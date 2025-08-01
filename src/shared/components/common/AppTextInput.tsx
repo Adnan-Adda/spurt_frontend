@@ -21,7 +21,7 @@ interface AppTextInputProps {
     onChangeText: (text: string) => void;
     placeholder?: string;
     secureTextEntry?: boolean;
-    error?: string;
+    error?: string | null | undefined | boolean;
     keyboardType?: KeyboardTypeOptions;
     multiline?: boolean;
     numberOfLines?: number;
@@ -33,7 +33,8 @@ interface AppTextInputProps {
 const AppTextInput: React.FC<AppTextInputProps> = ({
                                                        label,
                                                        value,
-                                                       onChangeText = () => {},
+                                                       onChangeText = () => {
+                                                       },
                                                        placeholder = '',
                                                        secureTextEntry = false,
                                                        error = null,
