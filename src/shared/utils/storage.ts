@@ -1,67 +1,47 @@
-/*
- * =================================================================
- * == FILE: src/utils/storage.ts
- * =================================================================
- *
- * Utility functions for interacting with secure, persistent storage.
- * We use this to save and retrieve the user's auth token and info.
- * NOTE: For a production app, consider using a more secure storage
- * solution like expo-secure-store. AsyncStorage is used here for simplicity.
- */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {User} from '@/shared/types';
+import { User } from '@/shared/types';
 
-const TOKEN_KEY = 'auth_token';
-const USER_KEY = 'auth_user';
+const TOKEN_KEY = 'user_token';
+const USER_KEY = 'user_data';
+const USER_TYPE_KEY = 'user_type';
 
-export const saveToken = async (token: string) => {
-    try {
-        await AsyncStorage.setItem(TOKEN_KEY, token);
-        console.log("Token: ", token);
-    } catch (e) {
-        console.error('Failed to save the token to storage', e);
-    }
+
+export const saveToken = async (token: string): Promise<void> => {
+    await AsyncStorage.setItem(TOKEN_KEY, token);
 };
 
-export const getToken = async () => {
-    try {
-        return await AsyncStorage.getItem(TOKEN_KEY);
-    } catch (e) {
-        console.error('Failed to fetch the token from storage', e);
-        return null;
-    }
+export const getToken = async (): Promise<string | null> => {
+    return await AsyncStorage.getItem(TOKEN_KEY);
 };
 
-export const removeToken = async () => {
-    try {
-        await AsyncStorage.removeItem(TOKEN_KEY);
-    } catch (e) {
-        console.error('Failed to remove the token from storage', e);
-    }
+export const removeToken = async (): Promise<void> => {
+    await AsyncStorage.removeItem(TOKEN_KEY);
 };
 
-export const saveUser = async (user: User) => {
-    try {
-        await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
-    } catch (e) {
-        console.error('Failed to save the user to storage', e);
-    }
+
+export const saveUser = async (user: User): Promise<void> => {
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
 };
 
 export const getUser = async (): Promise<User | null> => {
-    try {
-        const userJson = await AsyncStorage.getItem(USER_KEY);
-        return userJson ? JSON.parse(userJson) : null;
-    } catch (e) {
-        console.error('Failed to fetch the user from storage', e);
-        return null;
-    }
+    const userJson = await AsyncStorage.getItem(USER_KEY);
+    return userJson ? JSON.parse(userJson) : null;
 };
 
-export const removeUser = async () => {
-    try {
-        await AsyncStorage.removeItem(USER_KEY);
-    } catch (e) {
-        console.error('Failed to remove the user from storage', e);
-    }
+export const removeUser = async (): Promise<void> => {
+    await AsyncStorage.removeItem(USER_KEY);
+};
+
+
+export const saveUserType = async (userType: 'admin' | 'seller'): Promise<void> => {
+    await AsyncStorage.setItem(USER_TYPE_KEY, userType);
+};
+
+export const getUserType = async (): Promise<'admin' | 'seller' | null> => {
+    const userType = await AsyncStorage.getItem(USER_TYPE_KEY);
+    return userType as 'admin' | 'seller' | null;
+};
+
+export const removeUserType = async (): Promise<void> => {
+    await AsyncStorage.removeItem(USER_TYPE_KEY);
 };
