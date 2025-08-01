@@ -17,7 +17,8 @@ interface Session {
 
 interface AuthContextType {
     session: Session;
-    isLoading: boolean;
+    isInitialLoading: boolean;
+    isSubmitting: boolean;
     error: string | null;
     login: (credentials: LoginCredentials, userType: 'admin' | 'seller') => Promise<void>;
     logout: () => void;
@@ -31,11 +32,12 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
         token: null,
         userType: null,
     });
-    const [isLoading, setIsLoading] = useState(true);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const login = async (credentials: LoginCredentials, userType: 'admin' | 'seller') => {
-        setIsLoading(true);
+        setIsSubmitting(true);
         setError(null);
         try {
             let response;
@@ -58,22 +60,27 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
             setError(parseApiError(err));
             throw new Error(errorMessage);
         } finally {
-            setIsLoading(false);
+            setIsSubmitting(false);
         }
     };
 
     const logout = async () => {
-        setIsLoading(true);
-        if (session.userType === 'admin') {
-            await userService.logout();
-        } else if (session.userType === 'seller') {
-            await sellerService.logout();
+        setIsSubmitting(true);
+        try {
+            if (session.userType === 'admin') {
+                await userService.logout();
+            } else if (session.userType === 'seller') {
+                await sellerService.logout();
+            }
+        } catch (err) {
+            setError(parseApiError(err));
+        } finally {
+            await removeToken();
+            await removeUser();
+            await removeUserType();
+            setSession({user: null, token: null, userType: null});
+            setIsSubmitting(false);
         }
-        await removeToken();
-        await removeUser();
-        await removeUserType();
-        setSession({user: null, token: null, userType: null});
-        setIsLoading(false);
     };
 
     const checkAuthStatus = async () => {
@@ -89,7 +96,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
         } catch (e) {
             console.error('Failed to check auth status:', e);
         } finally {
-            setIsLoading(false);
+            setIsInitialLoading(false);
         }
     };
 
@@ -98,7 +105,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{session, isLoading, error, login, logout}}>
+        <AuthContext.Provider value={{session, isInitialLoading, isSubmitting, error, login, logout}}>
             {children}
         </AuthContext.Provider>
     );
