@@ -63,9 +63,9 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({initialValues, onS
                     label="Product Name *"
                     value={formik.values.productName}
                     onChangeText={formik.handleChange('productName')}
-                    // onBlur={formik.handleBlur('productName')}
+                    onBlur={formik.handleBlur('productName')}
                     error={formik.touched.productName ? formik.errors.productName : ''}
-                    // touched={formik.touched.productName}
+                    touched={formik.touched.productName}
                 />
 
                 <ImageUploadManager
@@ -86,9 +86,9 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({initialValues, onS
                     label="Quantity *"
                     value={String(formik.values.quantity)}
                     onChangeText={formik.handleChange('quantity')}
-                    // onBlur={formik.handleBlur('quantity')}
+                    onBlur={formik.handleBlur('quantity')}
                     error={formik.touched.quantity ? formik.errors.quantity : ''}
-                    // touched={formik.touched.quantity}
+                    touched={formik.touched.quantity}
                     keyboardType="numeric"
                 />
 
@@ -96,9 +96,9 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({initialValues, onS
                     label="Price *"
                     value={String(formik.values.price)}
                     onChangeText={formik.handleChange('price')}
-                    // onBlur={formik.handleBlur('price')}
+                    onBlur={formik.handleBlur('price')}
                     error={formik.touched.price ? formik.errors.price : ''}
-                    // touched={formik.touched.price}
+                    touched={formik.touched.price}
                     keyboardType="numeric"
                 />
 
