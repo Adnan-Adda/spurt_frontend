@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../styles/colors';
+import {View, Text, StyleSheet, SafeAreaView, Image} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {colors} from '../styles/colors';
 import AppButton from '../components/common/AppButton';
+import Constants from 'expo-constants';
+
 
 type RootStackParamList = {
     Storefront: undefined;
@@ -15,14 +17,14 @@ type LandingScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
 const LandingScreen = () => {
     const navigation = useNavigation<LandingScreenNavigationProp>();
-
+    const APP_VARIANT = Constants.expoConfig?.extra?.APP_VARIANT;
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
                 <View style={styles.header}>
                     {/* You can replace this with your actual logo */}
                     <Image
-                        source={{ uri: 'https://placehold.co/150x150/007bff/ffffff?text=Logo' }}
+                        source={{uri: 'https://placehold.co/150x150/007bff/ffffff?text=Logo'}}
                         style={styles.logo}
                     />
                     <Text style={styles.title}>Welcome to MarketWise</Text>
@@ -44,11 +46,15 @@ const LandingScreen = () => {
                     />
                 </View>
 
-                <View style={styles.footer}>
-                    <Text style={styles.footerText} onPress={() => navigation.navigate('AdminAuth')}>
-                        Administrator Login
-                    </Text>
-                </View>
+                {
+                    APP_VARIANT === 'admin' && (
+                        <View style={styles.footer}>
+                            <Text style={styles.footerText} onPress={() => navigation.navigate('AdminAuth')}>
+                                Administrator Login
+                            </Text>
+                        </View>
+                    )
+                }
             </View>
         </SafeAreaView>
     );
