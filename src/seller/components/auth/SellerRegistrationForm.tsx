@@ -7,7 +7,7 @@ import {NewSeller} from '@/shared/types';
 import AppTextInput from '@/shared/components/common/AppTextInput';
 import AppButton from '@/shared/components/common/AppButton';
 import {colors} from '@/shared/styles/colors';
-import RadioButtonGroup from "@/shared/components/common/common/RadioButtonGroup";
+import RadioButtonGroup from "@/shared/components/common/RadioButtonGroup";
 // TODO: Create an API service to fetch countries
 // import { getCountries } from '@/shared/api/country';
 
