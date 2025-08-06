@@ -1,10 +1,11 @@
-import apiClient from './apiClient';
+
 import {
     Product,
     NewProduct,
     UpdateProduct,
     ApiResponse,
 } from '@/shared/types';
+import apiClient from '../../shared/api/apiClient';
 
 type ProductListParams = {
     limit: number;

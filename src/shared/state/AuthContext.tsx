@@ -1,6 +1,6 @@
 import React, {createContext, useState, useEffect, useContext} from 'react';
-import {userService} from '@/shared/api/user';
-import {sellerService} from '@/shared/api/seller';
+import {userService} from '@/admin/api/user';
+import {sellerService} from '@/seller/api/seller';
 import {
     saveToken, getToken, removeToken,
     saveUser, getUser, removeUser,
