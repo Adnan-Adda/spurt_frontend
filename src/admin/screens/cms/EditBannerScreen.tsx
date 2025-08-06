@@ -6,7 +6,7 @@
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import {bannerService} from '../../../shared/api/banner';
+import {bannerService} from '../../api/banner';
 import {Banner, UpdateBanner, NewBannerImage} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';

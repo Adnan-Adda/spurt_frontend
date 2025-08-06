@@ -4,7 +4,7 @@ import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {Picker} from '@react-native-picker/picker';
 import {Role, User} from '@/shared/types';
-import {getRolesApi} from '../../../shared/api/role';
+import {getRolesApi} from '../../api/role';
 import AppTextInput from '../../../shared/components/common/AppTextInput';
 import AppButton from '../../../shared/components/common/AppButton';
 import {colors} from '@/shared/styles/colors';

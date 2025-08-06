@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert, View, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {userService} from '../../../shared/api/user';
+import {userService} from '../../api/user';
 import {NewUser} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import {parseApiError} from '@/shared/utils/errorHandler';

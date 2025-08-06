@@ -9,7 +9,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Alert } from 'react-native';
-import { getSettingsListApi, getSettingDetailApi, createSettingsApi } from '../../../shared/api/settings';
+import { getSettingsListApi, getSettingDetailApi, createSettingsApi } from '../../api/settings';
 import { StoreSettings } from '@/shared/types';
 import { colors } from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';

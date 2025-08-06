@@ -3,7 +3,7 @@ import {SafeAreaView, ScrollView, StyleSheet, Alert, View, Text, KeyboardAvoidin
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
-import {sellerService} from '@/shared/api/seller';
+import {sellerService} from '../../api/seller';
 import {NewSeller} from '@/shared/types/seller.types';
 import {colors} from '@/shared/styles/colors';
 import {parseApiError} from '@/shared/utils/errorHandler';

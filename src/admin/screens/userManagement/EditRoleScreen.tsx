@@ -8,7 +8,7 @@
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import {updateRoleApi} from '../../../shared/api/role';
+import {updateRoleApi} from '../../api/role';
 import {Role, UpdateRole} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';

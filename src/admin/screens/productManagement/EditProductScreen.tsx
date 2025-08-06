@@ -6,7 +6,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import {productService} from '../../../shared/api/product';
+import {productService} from '../../api/product';
 import {NewProduct, Product, UpdateProduct} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';

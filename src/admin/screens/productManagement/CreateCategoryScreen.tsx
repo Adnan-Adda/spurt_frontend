@@ -6,7 +6,7 @@
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {categoryService} from '../../../shared/api/category';
+import {categoryService} from '../../api/category';
 import {NewCategory} from '@/shared/types';
 import {colors} from '@/shared/styles/colors';
 import AppButton from '../../../shared/components/common/AppButton';
